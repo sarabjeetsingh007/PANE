@@ -327,7 +327,7 @@ void controller_src::generateMessage()
 
 void controller_src::displayRouterLinkStats()
 {
-//    cout<<"\nRouter Link Stats:\n";
+    cout<<"\nRouter Link Stats:\n";
     int link[numRouters][numRouters];
     for(int R1=0;R1<numRouters;R1++)
     {
@@ -364,7 +364,7 @@ int totaltraffic=0;
           {
               if(link[R1][R2]!=0)
                {
-//		   cout<<"Router:["<<R1<<"]\t->\t["<<R2<<"] = "<<link[R1][R2]<<endl;
+		   cout<<"Router:["<<R1<<"]\t->\t["<<R2<<"] = "<<link[R1][R2]<<endl;
 			totaltraffic +=link[R1][R2];
 		}
           }
@@ -397,7 +397,7 @@ void controller_src::finish()
    cout<<"Overall minimum flit latency = " << RetireStats.getMin() <<"s \n";
    cout<<"Overall maximum flit latency = " << RetireStats.getMax() <<"s \n";
    cout<<"Overall average flit latency = " << RetireStats.getMean() <<"s \n";
-//   displayCoreStats();          //For number of packets generated and retired at each Router
+   displayCoreStats();          //For number of packets generated and retired at each Router
    displayRouterLinkStats();    //For Statistics of Links between Routers, TODO: This is only for mesh network
    RetireStats.recordAs("Retire Stats");
    exit(0);
