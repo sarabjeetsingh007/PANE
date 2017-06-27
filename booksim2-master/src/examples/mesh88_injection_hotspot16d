@@ -1,0 +1,39 @@
+// Topology
+
+topology = mesh;
+k = 16;
+n = 2;
+
+// Routing
+routing_function = dor;
+
+// Flow control
+num_vcs     = 4;
+vc_buf_size = 16;
+wait_for_tail_credit = 0;
+
+// Router architecture
+vc_allocator = islip;
+sw_allocator = islip;
+alloc_iters  = 1;
+
+credit_delay   = 2;
+routing_delay  = 1;
+vc_alloc_delay = 1;
+sw_alloc_delay = 1;
+
+input_speedup     = 1;
+output_speedup    = 1;
+internal_speedup  = 1.0;
+
+vc_busy_when_full = 0;
+
+// Traffic
+traffic = hotspot;
+packet_size = 50;
+
+// Simulation
+sim_type = throughput;
+max_samples = 1000000;
+
+injection_rate=0.05;
