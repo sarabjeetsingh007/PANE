@@ -8,8 +8,8 @@ n = 2;
 routing_function = dor;
 
 // Flow control
-num_vcs     = 1;
-vc_buf_size = 4;
+num_vcs     = 4;
+vc_buf_size = 5;
 wait_for_tail_credit = 1;
 
 // Router architecture
@@ -29,7 +29,7 @@ internal_speedup  = 1.0;
 vc_busy_when_full = 0;
 
 // Traffic
-workload=netrace({/home/sarab/Downloads/BookSim_Benchmark_files/swaptions_64c_simlarge.tra.bz2,100000000,1,2,1,1,0);
+workload=netrace({/home/sarab/Documents/Simulators/PARSEC/blackscholes_64c_simsmall.tra.bz2,100000000,1,2,1,1,0);
 
 // Simulation
 sim_type = workload;

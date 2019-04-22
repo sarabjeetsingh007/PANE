@@ -11,7 +11,7 @@
 #include "outputbuffer.h"
 #include <sys/ioctl.h>
 
-#define numRouters 16
+#define numRouters 64
 #define numClients 4
 
 using namespace omnetpp;
@@ -86,7 +86,7 @@ void controller_src::initialize()
     	}
          wasExecuted_src = true;
          init_socket();
-         current_time = simTime() - 100.0;
+         current_time = simTime() + 100.0;
          setcontrollertime(current_time);
          cMessage *timer_msg = new cMessage();
          handleMessage(timer_msg);
@@ -105,7 +105,7 @@ void controller_src::handleMessage(cMessage *msg)
     else
     {
 //	cout<<simTime()<<"s\n";
-        if(((int)(simTime().dbl()) - (int)(current_time.dbl())) >= 1.0)
+        if(((int)(current_time.dbl()) != (int)(simTime().dbl())))
         {
 //            EV<<"RESET----\n";
 //            timer();      //TODO: (Correct one), but poll fail
@@ -327,7 +327,7 @@ void controller_src::generateMessage()
 
 void controller_src::displayRouterLinkStats()
 {
-//    cout<<"\nRouter Link Stats:\n";
+    cout<<"\nRouter Link Stats:\n";
     int link[numRouters][numRouters];
     for(int R1=0;R1<numRouters;R1++)
     {
@@ -357,19 +357,14 @@ void controller_src::displayRouterLinkStats()
 
        }
     }
-int totaltraffic=0;
     for(int R1=0;R1<numRouters;R1++)
       {
           for(int R2=0;R2<numRouters;R2++)
           {
               if(link[R1][R2]!=0)
-               {
-//		   cout<<"Router:["<<R1<<"]\t->\t["<<R2<<"] = "<<link[R1][R2]<<endl;
-			totaltraffic +=link[R1][R2];
-		}
+                  cout<<"Router:["<<R1<<"]\t->\t["<<R2<<"] = "<<link[R1][R2]<<endl;
           }
       }
-	cout<<"Link Activity Factor = "<<totaltraffic/simTime()<<endl;
 }
 
 void controller_src::displayCoreStats()
@@ -397,7 +392,7 @@ void controller_src::finish()
    cout<<"Overall minimum flit latency = " << RetireStats.getMin() <<"s \n";
    cout<<"Overall maximum flit latency = " << RetireStats.getMax() <<"s \n";
    cout<<"Overall average flit latency = " << RetireStats.getMean() <<"s \n";
-//   displayCoreStats();          //For number of packets generated and retired at each Router
+   displayCoreStats();          //For number of packets generated and retired at each Router
    displayRouterLinkStats();    //For Statistics of Links between Routers, TODO: This is only for mesh network
    RetireStats.recordAs("Retire Stats");
    exit(0);

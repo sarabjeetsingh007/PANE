@@ -193,8 +193,12 @@ BookSimConfig::BookSimConfig( )
 
   _int_map["warmup_periods"] = 3; // number of samples periods to "warm-up" the simulation
 
-  _int_map["sample_period"] = 100;//1000000; // how long between measurements	//Sneha
-  _int_map["max_samples"]   = 10;//1000;   // maximum number of sample periods in a simulation //Sneha
+
+  int samplePeriod = 100;  
+  _int_map["sample_period"] = samplePeriod;//1000000; // how long between measurements	//Sneha
+
+  int maxSamples = 10;  
+  _int_map["max_samples"]   = maxSamples;//1000;   // maximum number of sample periods in a simulation //Sneha
   
   // whether or not to measure statistics for a given traffic class
   _int_map["measure_stats"] = 1;

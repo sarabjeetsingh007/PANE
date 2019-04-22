@@ -34,7 +34,7 @@
 #include <sys/un.h>		
 #include <unistd.h>
 #include "socket_lib.hpp"
-#define numRouters 16
+#define numRouters 64
 #define numClients 4
 
 int s_src;
@@ -154,6 +154,8 @@ int main( int argc, char **argv )
 		    for(int P=0;P<5;P++)
 		    {
 			setfd(create_socket(R,C,P),R,C,P);
+//			usleep(25000);			//100000
+			usleep(35000);
 		    }
 		}
 	}

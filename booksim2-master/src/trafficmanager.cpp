@@ -502,7 +502,7 @@ int TrafficManager::_GeneratePacket( int source, int dest, int size, int cl, int
     f->watch = watch | (gWatchOut && (_flits_to_watch.count(f->id) > 0));
     f->src = source;
     f->dest = dest;
-    f->ctime = GetSimTime();//time;
+    f->ctime = time;
     f->record = record;
     f->cl = cl;
     f->head = (i == 0);
@@ -980,12 +980,11 @@ for(int cnt = 0; cnt <1000; cnt++) {
 	if ( empty_steps % 10 == 0 ) {
 	_DisplayRemaining( );		//ShutUP
 	      }
+      
       packets_left = false;
       for(int c = 0; c < _classes; ++c) {
 	packets_left |= !_total_in_flight_flits[c].empty();
       }
-	if(packets_left==false && Credit::OutStanding()==0)
-		break;
     }
     //wait until all the credits are drained as well
     while(Credit::OutStanding()!=0){

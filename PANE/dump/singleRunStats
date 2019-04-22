@@ -1,0 +1,63 @@
+OMNeT++ Discrete Event Simulation  (C) 1992-2017 Andras Varga, OpenSim Ltd.
+Version: 5.1, build: 170331-7c4e366, edition: Academic Public License -- NOT FOR COMMERCIAL USE
+See the license for distribution terms and warranty disclaimer
+
+Setting up Cmdenv...
+
+Loading NED files from .:  9
+
+Preparing for running configuration General, run #0...
+Assigned runID=General-0-20170910-23:30:39-2717
+Setting up network "tictoc1"...
+Initializing...
+
+Running simulation...
+** Event #0   t=0   Elapsed: 0.000s (0m 00s)
+     Speed:     ev/sec=0   simsec/sec=0   ev/simsec=0
+     Messages:  created: 2   present: 1   in FES: 1
+Simulation End!
+End Time = 2001s
+FINISH:
+Total Number of packets generated = 440
+FINISH:
+Total Number of packets retired = 440
+Overall minimum flit latency = 6s 
+Overall maximum flit latency = 38s 
+Overall average flit latency = 19.3705s 
+
+Router[#]			# Generated		# Retired
+Router[0]			47			38
+Router[1]			57			41
+Router[2]			35			43
+Router[3]			45			53
+Router[4]			43			46
+Router[5]			49			61
+Router[6]			51			61
+Router[7]			54			56
+Router[8]			59			41
+
+Router Link Stats:
+Router:[0]	->	[1] = 31
+Router:[0]	->	[3] = 32
+Router:[1]	->	[0] = 26
+Router:[1]	->	[2] = 31
+Router:[1]	->	[4] = 40
+Router:[2]	->	[1] = 24
+Router:[2]	->	[5] = 34
+Router:[3]	->	[0] = 28
+Router:[3]	->	[4] = 26
+Router:[3]	->	[6] = 39
+Router:[4]	->	[1] = 26
+Router:[4]	->	[3] = 34
+Router:[4]	->	[5] = 30
+Router:[4]	->	[7] = 35
+Router:[5]	->	[2] = 35
+Router:[5]	->	[4] = 37
+Router:[5]	->	[8] = 25
+Router:[6]	->	[3] = 35
+Router:[6]	->	[7] = 35
+Router:[7]	->	[4] = 25
+Router:[7]	->	[6] = 41
+Router:[7]	->	[8] = 40
+Router:[8]	->	[5] = 45
+Router:[8]	->	[7] = 38

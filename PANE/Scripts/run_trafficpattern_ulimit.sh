@@ -40,5 +40,3 @@ make -j4 sock
 gnome-terminal -x sh -c "(sleep 1; cd ../booksim2-master/src/; ulimit -n 4096; ./run.sh > dumpbitcomp; )"
 ./PANE -u Cmdenv -f omnetpp.ini
 
-sed -i -e 's/traffic = bitcomp/traffic = neighbor/g' ../booksim2-master/src/examples/bitrev
-

@@ -33,7 +33,7 @@
 #include <stdlib.h>
 #include <poll.h>
 #include "socket_lib.hpp"
-#define numRouters 16
+#define numRouters 64
 #define numClients 4
 namespace patch
 {
@@ -51,6 +51,7 @@ char char_rcv;
 FILE *fp[numRouters][numClients][5];
 struct pollfd fds[numRouters][numClients][5];
 
+bool clash[numRouters][5];
 int rv;
 
 std::deque<int> buffer[numRouters][numClients];
@@ -77,6 +78,10 @@ IQRouter::IQRouter( Configuration const & config, Module *parent, string const &
 				}
 			}
 		}
+		for(int R = 0; R<numRouters; R++)
+			for(int P=0; P<5;P++)
+				clash[R][P]=false;
+		
 
   _vcs         = config.GetInt( "num_vcs" );
 
@@ -338,6 +343,7 @@ void IQRouter::_InternalStep( )
 			{
 				if (char_rcv == '\n')
 				{
+//					if(this->GetID()==11 && P==4)
 //					cout<<"s: R,C,P:["<<this->GetID()<<"][3]["<<P<<"]->ID:"<<temp<<endl;
 					buffer[this->GetID()][3].push_back(temp);
 					temp=0;
@@ -1150,8 +1156,10 @@ void IQRouter::_SWAllocEvaluate( )
 //    Buffer const * const cur_buf = iter->second.second.first;
 	Buffer const * const cur_buf = _buf[input];
     Flit const * const f = cur_buf->FrontFlit(vc);
+//	cout<<"\n------3-----SwitchAlloc["<<this->GetID()<<"]->"<<f->id<<endl;
     int const expanded_input = input * _input_speedup + vc % _input_speedup;
     int expanded_output = _sw_allocator->OutputAssigned(expanded_input);
+    int dest_output = cur_buf->GetOutputPort(vc);		//Sarab
     if(expanded_output >= 0)
     {
       int const granted_vc = _sw_allocator->ReadRequest(expanded_input, expanded_output);
@@ -1201,6 +1209,8 @@ void IQRouter::_SWAllocEvaluate( )
     {
       iter->second.first = STALL_CROSSBAR_CONFLICT;
     }
+  	if(iter->second.first == STALL_CROSSBAR_CONFLICT)	//Sarab
+  		clash[this->GetID()][dest_output]=true;
   }
   
   if(!_speculative && (_sw_alloc_delay <= 1))
@@ -1226,9 +1236,11 @@ void IQRouter::_SWAllocEvaluate( )
 //      Buffer const * const cur_buf = iter->second.second.first;
 		Buffer const * const cur_buf = _buf[input];
       Flit const * const f = cur_buf->FrontFlit(vc);
+//	cout<<"\n----2-------SwitchAlloc["<<this->GetID()<<"]->"<<f->id<<endl;
       if((_switch_hold_in[expanded_input] >= 0) || (_switch_hold_out[expanded_output] >= 0))
       {
-		iter->second.first = STALL_CROSSBAR_CONFLICT;
+				iter->second.first = STALL_CROSSBAR_CONFLICT;
+				clash[this->GetID()][output]=true;		//Sarab
       }
       else if(_speculative && (cur_buf->GetState(vc) == VC::vc_alloc))
       {
@@ -1351,6 +1363,7 @@ void IQRouter::_SWAllocUpdate( )
 			if(f->pid == fc->pid)
 			{
 				flag = true;
+//				cout<<"Crossbar_-1["<<this->GetID()<<"]->"<<f->id<<endl;
 				break;
 			}
 		}
@@ -1367,6 +1380,7 @@ void IQRouter::_SWAllocUpdate( )
       f->hops++;
       f->vc = match_vc;
       dest_buf->SendingFlit(f);
+//	cout<<"Crossbar1["<<this->GetID()<<"]["<<input<<"]->"<<f->id<<endl;
 	_crossbar_flits.push_back(make_pair(-1, make_pair(f, make_pair(expanded_input, expanded_output))));	
       if(_out_queue_credits.count(input) == 0)
       {
@@ -1425,7 +1439,14 @@ void IQRouter::_SwitchEvaluate( )
     Flit const * const f = iter->second.first;
     int const expanded_input = iter->second.second.first;
     int const expanded_output = iter->second.second.second;
-		iter->first = GetSimTime() + _crossbar_delay - 1;
+    if(clash[this->GetID()][(expanded_output / _output_speedup)]==true)				//*Sarab
+    {
+//	cout<<"Clash["<<this->GetID()<<"]->"<<f->id<<endl;
+    	iter->first = GetSimTime() + _crossbar_delay - 1 ;
+    	clash[this->GetID()][(expanded_output / _output_speedup)]==false;
+    }
+    else
+    	iter->first = GetSimTime() + _crossbar_delay - 1;
   }
 }
 
@@ -1455,7 +1476,7 @@ void IQRouter::_SwitchUpdate( )
 //	cout<<"Switch["<<this->GetID()<<"]->"<<f->id<<endl;
     if((time < 0) || (GetSimTime() < time))
     {
-	_crossbar_flits.push_back(make_pair(time,item.second));
+	_crossbar_flits.push_back(make_pair((time),item.second));
 	 _crossbar_flits.pop_front();
       		continue;
     }

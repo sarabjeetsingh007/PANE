@@ -39,6 +39,7 @@ public:
   bool watch;
   
   int starttime;	//Sarab
+//  int hid;		//Sarab (Head ID)
   
   int repeat_change;
   

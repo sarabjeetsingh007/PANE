@@ -141,5 +141,4 @@ make -j80 sock
 gnome-terminal -x sh -c "(sleep 1; cd ../booksim2-master/src/;   ./run.sh > dump50; )"
 ./PANE -u Cmdenv -f omnetpp.ini
 
-sed -i -e 's/injection_rate = 0.5/injection_rate = 0.05/g'   ../booksim2-master/src/examples/bitrev
 

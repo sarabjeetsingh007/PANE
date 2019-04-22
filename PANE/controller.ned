@@ -18,7 +18,7 @@ package trial2;
 simple controller_src
 {
     parameters: 
-        int numRouters = 16;
+		int numRouters = 64;
     gates:
         output out[numRouters] @loose ;
         input Ack_in[numRouters] @loose ;
