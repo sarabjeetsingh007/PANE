@@ -1,21 +1,16 @@
-//PANE/router.ned
-//Describes the connections within a router 
-//Router distribution: 		5 InputBuffer each connected to respective ports of Client[0]. A new packet of data enter the router through InputBuffer.
-//							4 simultaneously connected Clients
-//							5 OutputBuffer each connected to respective ports of Client[3]. A packet of data exits the router through OutputBuffer.
 
-package PANE;
+package trial2;
 module mod_router
 {
     //@display("bgb=553.14,131.67");
     parameters:
-        int numClients = 4 ;		//Represents the division of a Router
+        int numClients @prompt("Number of clients") = default(4);
         @display("bgb=864.745,437.255");
     gates:
-        input in[5] @loose;		//Message input gate 
-        output out[5] @loose;		//Message output gate
-        input Ack_in[5] @loose;		//Acknowledgement input gate
-        output Ack_out[5] @loose;		//Acknowledgement output gate 
+        input in[5] @loose;
+        output out[5] @loose;
+        input Ack_in[5] @loose;
+        output Ack_out[5] @loose;
 
     submodules:
         inputbuff[5]: inputbuffer {

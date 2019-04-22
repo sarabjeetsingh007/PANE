@@ -39,6 +39,7 @@ void FlitChannel::SetSink(Router const * const router, int port) {
 
 void FlitChannel::Send(Flit * f) {
   if(f) {
+//cout<<f->id<<" at "<<GetSimTime()<<"s<- From FlitChannel.Send()->1"<<endl;
     ++_active[f->cl];
   } else {
     ++_idle;
@@ -48,6 +49,8 @@ void FlitChannel::Send(Flit * f) {
 
 void FlitChannel::ReadInputs() {
   Flit const * const & f = _input;
+//if(f )
+//	cout<<f->id<<" at "<<GetSimTime()<<"s<- From FlitChannel.ReadInputs()->3"<<endl;
   if(f && f->watch) {
     *gWatchOut << GetSimTime() << " | " << FullName() << " | "
 	       << "Beginning channel traversal for flit " << f->id
@@ -59,6 +62,8 @@ void FlitChannel::ReadInputs() {
 
 void FlitChannel::WriteOutputs() {
   Channel<Flit>::WriteOutputs();
+//if(_output)
+//	cout<<_output->id<<" at "<<GetSimTime()<<"s<- From FlitChannel.WriteOutputs()->5"<<endl;
   if(_output && _output->watch) {
     *gWatchOut << GetSimTime() << " | " << FullName() << " | "
 	       << "Completed channel traversal for flit " << _output->id

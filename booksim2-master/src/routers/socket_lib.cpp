@@ -1,4 +1,3 @@
-/*PANE Support*/
 
 #include<stdio.h>
 #include <stdlib.h>
@@ -6,12 +5,15 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 //using namespace std;
-#define numRouters 16		//Represents the number of Routers in the network
-#define numClients 4		//Represents the division of a Router
-#define ADDR_SRC     "../../socket_src"		//Epoch increment socket
-#define ADDR_TIMER     "../../socket_timer"		//Packet generation socket
+#define numRouters 16
+#define numClients 4
+
+
+#define ADDR_SRC     "../../socket_src"
+
+#define ADDR_TIMER     "../../socket_timer"
 	
-int fd[numRouters][numClients][5];		//File Descriptor
+int fd[numRouters][numClients][5];
 int sd[numRouters][numClients][5];
 struct sockaddr_un saun[numRouters][numClients][5];
 
@@ -25,13 +27,14 @@ struct sockaddr_un saun_timer;
 
 const char * ADDR[numRouters][numClients][5];
 
-int transfer_counter[numRouters][numClients][5];		// Counter to record number of data written in the RCP-data socket in that epoch
+int transfer_counter[numRouters][numClients][5];		//*Sarab
 
-int getTransferCounter(int R,int C, int P) { return transfer_counter[R][C][P];}		//Returns counter value
+int getTransferCounter(int R,int C, int P) { return transfer_counter[R][C][P];}		//*Sarab
 
-void setTransferCounter(int R,int C, int P, int value) { transfer_counter[R][C][P]=value;}			//Sets counter value
+void setTransferCounter(int R,int C, int P, int value) { transfer_counter[R][C][P]=value;}	//*Sarab
 
-void resetTransferCounter() 		//Resets counter value
+//Transfer Counter
+void resetTransferCounter() 
 {
 	for(int R = 0; R<numRouters; R++)
 	{
@@ -45,22 +48,27 @@ void resetTransferCounter() 		//Resets counter value
 	}
 }
 
+//Src
 int create_socket_src()
 {
 	int len;
+	
+
 	if ((sd_src = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
 	{
-		perror("SRC: socket");
-		exit(1);
+	perror("SRC: socket");
+	exit(1);
 	}
+
 	saun_src.sun_family = AF_UNIX;
 	strcpy(saun_src.sun_path, ADDR_SRC);
+
 	len = sizeof(saun_src.sun_family) + strlen(saun_src.sun_path);
-	while(1)
+	
+	if (connect(sd_src, (struct sockaddr *) &saun_src, len) < 0)
 	{
-		if (connect(sd_src, (struct sockaddr *) &saun_src, len) < 0)
-			continue;
-		break;
+	perror("SRC: connect");
+	exit(1);
 	}
 	printf("Master: Running SRC....\n");
 	return sd_src;
@@ -75,22 +83,27 @@ int getfd_src()
         return fd_src;
 }
 
+//Timer
 int create_socket_timer()
 {
 	int len;
+	
+
 	if ((sd_timer = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
 	{
-		perror("timer: socket");
-		exit(1);
+	perror("timer: socket");
+	exit(1);
 	}
+
 	saun_timer.sun_family = AF_UNIX;
 	strcpy(saun_timer.sun_path, ADDR_TIMER);
+
 	len = sizeof(saun_timer.sun_family) + strlen(saun_timer.sun_path);
-	while(1)
+
+	if (connect(sd_timer, (struct sockaddr *) &saun_timer, len) < 0)
 	{
-		if (connect(sd_timer, (struct sockaddr *) &saun_timer, len) < 0)
-			continue;
-		break;
+	perror("timer: connect");
+	exit(1);
 	}
 	printf("Master: Running timer....\n");
 	return sd_timer;
@@ -106,24 +119,39 @@ int getfd_timer()
 }
 
 
+//Clients
 int create_socket(int R,int C,int P)
 {
 	
 	int len; 
-	if ((sd[R][C][P] = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
-	{ 
+	 if ((sd[R][C][P] = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
+	 { 
 		perror("socket");
-	}
-	saun[R][C][P].sun_family = AF_UNIX;
-	strcpy(saun[R][C][P].sun_path, ADDR[R][C][P]);
-	len = sizeof(saun[R][C][P].sun_family) + strlen(saun[R][C][P].sun_path); 
+//		printf("Client[%d][%d][%d]: socket error",R,C,P);exit(1); 
+	 }
+//	int on=1;
+//	if((setsockopt(sd[R][C][P], SOL_SOCKET,  SO_REUSEADDR,(char *)&on, sizeof(on))) < 0)		//Can remove
+//	{
+//		perror("setsockopt() failed");
+//		exit(1);
+//	}
+	 saun[R][C][P].sun_family = AF_UNIX;
+	 strcpy(saun[R][C][P].sun_path, ADDR[R][C][P]);
+	 len = sizeof(saun[R][C][P].sun_family) + strlen(saun[R][C][P].sun_path); 
 	while(1)
 	{
 		if (connect(sd[R][C][P], (struct sockaddr *) &saun[R][C][P], len) < 0)
 			continue;
 		break;
 	}
+//	 if (connect(sd[R][C][P], (struct sockaddr *) &saun[R][C][P], len) < 0) 
+//	 { 
+//		perror("connect");
+//		printf("Client[%d][%d][%d]: connect error",R,C,P);
+//		 exit(1); 
+//	 }
 	 return sd[R][C][P];
+	
 }
 
 void setfd(const int& val,int R,int C, int P)
@@ -132,9 +160,9 @@ void setfd(const int& val,int R,int C, int P)
  }
 
 int getfd(int R,int C,int P)
-{ 
-	return fd[R][C][P];
-}
+ { 
+ 	return fd[R][C][P];
+ }
 
 
 void assignsocklist()

@@ -13,7 +13,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package PANE;
+package trial2;
 
 simple mod_sink
 {
@@ -21,7 +21,7 @@ simple mod_sink
         @display("i=block/routing");
 //        @statistic[count](record=min,timeavg,vector?);
     gates:
-        input in @loose ;		//Message input gate 
-        output Ack_out @loose ;		//Acknowledgement output gate
-        output countret;		//Gate for notifying Controller of retired flits
+        input in @loose ;
+        output Ack_out @loose ;
+        output countret;
 }

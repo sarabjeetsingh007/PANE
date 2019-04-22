@@ -8,7 +8,7 @@ n = 2;
 routing_function = dor;
 
 // Flow control
-num_vcs = 4;
+num_vcs     = 4;
 vc_buf_size = 4;
 wait_for_tail_credit = 0;
 
@@ -29,7 +29,7 @@ internal_speedup  = 1.0;
 vc_busy_when_full = 0;
 
 // Traffic
-traffic = neighbor;
+traffic = bitcomp;
 packet_size = 5;
 
 // Simulation

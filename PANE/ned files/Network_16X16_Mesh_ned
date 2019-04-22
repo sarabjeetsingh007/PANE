@@ -1,5 +1,5 @@
-package PANE;
-network NoC
+package trial2;
+network tictoc1
 {
     parameters:
         int r = 0;	//right

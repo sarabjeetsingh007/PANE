@@ -67,10 +67,14 @@ void Channel<T>::SetLatency(int cycles) {
 template<typename T>
 void Channel<T>::Send(T * data) {
   _input = data;
+//if(_input)
+//	cout<<_input->id<<" at "<<GetSimTime()<<"s<- From Channel.Send()->2"<<endl;
 }
 
 template<typename T>
 T * Channel<T>::Receive() {
+//	if(_output)
+//		cout<<_output->id<<" at "<<GetSimTime()<<"s<- From Channel.Receive()->7"<<endl;
   return _output;
 }
 
@@ -78,6 +82,7 @@ template<typename T>
 void Channel<T>::ReadInputs() {
   if(_input) {
     _wait_queue.push(make_pair(GetSimTime() + _delay - 1, _input));
+//	cout<<_input->id<<" at "<<GetSimTime()<<"s<- From Channel.ReadInputs()->4"<<endl;
     _input = 0;
   }
 }
@@ -95,6 +100,7 @@ void Channel<T>::WriteOutputs() {
   }
   assert(GetSimTime() == time);
   _output = item.second;
+//	cout<<_output->id<<" at "<<GetSimTime()<<"<- From Channel.WriteOutputs()->6"<<endl;
   assert(_output);
   _wait_queue.pop();
 }

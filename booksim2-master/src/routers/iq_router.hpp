@@ -67,14 +67,17 @@ class IQRouter : public Router {
   int _vc_alloc_delay;
   int _sw_alloc_delay;
   
-  deque<pair<int, Flit *> > _in_queue_flits;		//PANE Support
+//  map<int, Flit *> _in_queue_flits;
+  deque<pair<int, Flit *> > _in_queue_flits;
 
   deque<pair<int, pair<Credit *, int> > > _proc_credits;
 
   deque<pair<int, pair<int, int> > > _route_vcs;
-  deque<pair<int, pair<int, pair<Buffer *, pair<int, pair<int, int> > > > > > _vc_alloc_vcs;		//PANE Support
+//  deque<pair<int, pair<pair<int, int>, int> > > _vc_alloc_vcs;  
+  deque<pair<int, pair<int, pair<Buffer *, pair<int, pair<int, int> > > > > > _vc_alloc_vcs;
   deque<pair<int, pair<pair<int, int>, int> > > _sw_hold_vcs;
-  deque<pair<int, pair<int, pair<Buffer *, pair<int, int> > > > > _sw_alloc_vcs;		//PANE Support
+//  deque<pair<int, pair<pair<int, int>, int> > > _sw_alloc_vcs;
+  deque<pair<int, pair<int, pair<Buffer *, pair<int, int> > > > > _sw_alloc_vcs;
 
   deque<pair<int, pair<Flit *, pair<int, int> > > > _crossbar_flits;
 

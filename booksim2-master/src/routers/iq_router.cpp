@@ -21,8 +21,8 @@
 #include "allocator.hpp"
 #include "switch_monitor.hpp"
 #include "buffer_monitor.hpp"
-//*PANE support
-#include <sys/types.h>
+
+#include <sys/types.h>		//*Sarab
 #include <sys/un.h>		
 #include <sys/time.h>	
 #include <unistd.h>
@@ -33,10 +33,9 @@
 #include <stdlib.h>
 #include <poll.h>
 #include "socket_lib.hpp"
-#define numRouters 16		//Represents the number of Routers in the network
-#define numClients 4		//Represents the division of a Router
-
-namespace patch			//Patch for std::to_string()
+#define numRouters 16
+#define numClients 4
+namespace patch
 {
     template < typename T > std::string to_string( const T& n )
     {
@@ -47,18 +46,25 @@ namespace patch			//Patch for std::to_string()
 }				
 using namespace std;
 
-FILE *fp[numRouters][numClients][5];		//(UNIX Domain Sockets) File pointers
-struct pollfd fds[numRouters][numClients][5];		//(UNIX DOMAIN SOCKET) Holds the set of file descriptors(epoch handshake with synchronous simulator) to be monitored by poll (http://man7.org/linux/man-pages/man2/poll.2.html)
-std::deque<int> buffer[numRouters][numClients];		//Structure to record flits received through the sockets from PANE
-std::deque<pair<Buffer *, pair<int, pair<int, int> > > > buffer_routeup[numRouters];		//Structure to record flits forwarded by BookSim2 at RouteUpdate 
-char *str_tbs = "Junk\n";		//(UNIX DOMAIN SOCKET) Message to be sent through the socket	
-char *str_tbs_router = "Junk\n";		//(UNIX DOMAIN SOCKET) Message to be sent through the socket	
-//PANE support*
+char *str_tbs = "msg\n";		
+char char_rcv;		
+FILE *fp[numRouters][numClients][5];
+struct pollfd fds[numRouters][numClients][5];
+
+int rv;
+
+std::deque<int> buffer[numRouters][numClients];
+int temp;
+//std::deque<pair<int, Flit *> > buffer_receive[numRouters];
+std::deque<pair<Buffer *, pair<int, pair<int, int> > > > buffer_routeup[numRouters];
+
+char *str_tbs_router = "msg\n";		
+			//Sarab*
 
 IQRouter::IQRouter( Configuration const & config, Module *parent, string const & name, int id, int inputs, int outputs )
 : Router( config, parent, name, id, inputs, outputs ), _active(false)
 {
-		//*PANE support
+							//*Sarab
 		for(int R = 0; R<numRouters; R++)
 		{
 			for(int C = 0; C<numClients; C++)
@@ -71,7 +77,6 @@ IQRouter::IQRouter( Configuration const & config, Module *parent, string const &
 				}
 			}
 		}
-		//PANE support*
 
   _vcs         = config.GetInt( "num_vcs" );
 
@@ -248,57 +253,105 @@ void IQRouter::ReadInputs( )
 
 void IQRouter::_InternalStep( )
 {	
-	//*PANE support
-	//Read data written by PANE from socket file
-	char char_rcv;	
-	int counter;		//Represents number of data written in the socket by PANE in the that epoch, i.e. # of data to be read
-	int temp;
-	for(int P = 0; P<5; P++)		
+	//	getTransferCounter(int R,int C, int P)
+	for(int P = 0; P<5; P++)
 	{
-		for(int C=0; C<4; C++)
+//		cout<<this->GetID()<<",0,"<<P<<"->"<<getTransferCounter(this->GetID(),0,P)<<endl;
+		int counter=getTransferCounter(this->GetID(),0,P);
+		if(counter>0)
 		{
-			if(C==0 || C==3)
+			temp = 0;
+			while ((char_rcv = fgetc(fp[this->GetID()][0][P])) != EOF)		
 			{
-				counter=getTransferCounter(this->GetID(),C,P);		// number of data to be read
-				if(counter>0)
+				if (char_rcv == '\n')
 				{
-					temp = 0;
-					while ((char_rcv = fgetc(fp[this->GetID()][C][P])) != EOF)		
-					{
-						if (char_rcv == '\n')
-						{
-//							cout<<"s: R,C,P:["<<this->GetID()<<"]["<<C<<"]["<<P<<"]->ID:"<<temp<<endl;
-							buffer[this->GetID()][C].push_back(temp);		//Adding the flit read to the buffer
-							temp=0;
-							--counter;
-							if(counter==0)
-								break;
-						}
-						else 
-							temp = temp*10 + (char_rcv-48);
-					}
-					setTransferCounter(this->GetID(),C,P,0);		//Reset the counter 
+//					cout<<"s: R,C,P:["<<this->GetID()<<"][0]["<<P<<"]->ID:"<<temp<<endl;
+					buffer[this->GetID()][0].push_back(temp);
+					temp=0;
+					--counter;
+					if(counter==0)
+						break;
 				}
+				else 
+					temp = temp*10 + (char_rcv-48);
 			}
-			else
-			{
-				if(poll(&fds[this->GetID()][C][P],1,0) >0)
-				{
-					temp = 0;
-					while ((char_rcv = fgetc(fp[this->GetID()][C][P])) != EOF)		
-					{
-						if (char_rcv == '\n')
-							break;
-						temp = temp*10 + (char_rcv-48);
-					}
-					buffer[this->GetID()][C].push_back(temp);		//Adding the flit read to the buffer
-//					cout<<"s: R,C,P:["<<this->GetID()<<"]["<<C<<"]["<<P<<"]->ID:"<<temp<<endl;
-				}
-				setTransferCounter(this->GetID(),C,P,0);
-			}
+			setTransferCounter(this->GetID(),0,P,0);
 		}
 	}
-	//PANE support*
+	for(int P = 0; P<5; P++)
+	{
+		rv = poll(&fds[this->GetID()][1][P],1,0);
+		if(rv == -1)
+			perror("Poll Error");
+		else if(rv == 0)
+		{
+//			printf("Timeout occurred!  \n");
+		}
+		else
+		{
+//			if(P==2 && this->GetID()==0)
+//			cout<<"Blah\n";
+			temp = 0;
+			while ((char_rcv = fgetc(fp[this->GetID()][1][P])) != EOF)		
+			{
+				if (char_rcv == '\n')
+					break;
+				temp = temp*10 + (char_rcv-48);
+			}
+			buffer[this->GetID()][1].push_back(temp);
+//			cout<<"s: R,C,P:["<<this->GetID()<<"][1]["<<P<<"]->ID:"<<temp<<endl;
+//			cout<<"RouteUpdate["<<this->GetID()<<"]->ID:"<<temp<<", at Port:"<<P<<endl;
+		}
+		setTransferCounter(this->GetID(),1,P,0);
+	}
+	for(int P = 0; P<5; P++)
+	{
+		rv = poll(&fds[this->GetID()][2][P],1,0);
+		if(rv == -1)
+			perror("Poll Error");
+		else if(rv == 0)
+		{
+//			printf("Timeout occurred!  \n");
+		}
+		else
+		{
+			temp = 0;
+			while ((char_rcv = fgetc(fp[this->GetID()][2][P])) != EOF)		
+			{
+				if (char_rcv == '\n')
+					break;
+				temp = temp*10 + (char_rcv-48);
+			}
+			buffer[this->GetID()][2].push_back(temp);
+//			cout<<"s: R,C,P:["<<this->GetID()<<"][2]["<<P<<"]->ID:"<<temp<<endl;
+//				cout<<"VCUpdate["<<this->GetID()<<"]->ID:"<<temp<<", at Port:"<<P<<endl;
+		}
+		setTransferCounter(this->GetID(),2,P,0);
+	}
+	for(int P = 0; P<5; P++)
+	{
+		int counter=getTransferCounter(this->GetID(),3,P);
+		if(counter>0)
+		{
+			temp = 0;
+			while ((char_rcv = fgetc(fp[this->GetID()][3][P])) != EOF)		
+			{
+				if (char_rcv == '\n')
+				{
+//					cout<<"s: R,C,P:["<<this->GetID()<<"][3]["<<P<<"]->ID:"<<temp<<endl;
+					buffer[this->GetID()][3].push_back(temp);
+					temp=0;
+					--counter;
+					if(counter==0)
+						break;
+				}
+				else 
+					temp = temp*10 + (char_rcv-48);
+			}
+			setTransferCounter(this->GetID(),3,P,0);
+		}
+	}
+	//TODO: Merge all 4 Socket Reads into 1.
   if(!_active)
   {return;}
 
@@ -322,7 +375,7 @@ void IQRouter::_InternalStep( )
   if(!_crossbar_flits.empty())
     _SwitchEvaluate( );
 
-  if(!_route_vcs.empty() || !buffer[this->GetID()][1].empty() || !buffer_routeup[this->GetID()].empty())		//PANE support
+  if(!_route_vcs.empty() || !buffer[this->GetID()][1].empty() || !buffer_routeup[this->GetID()].empty())
   {
 	if(!buffer[this->GetID()][1].empty())			
 			_RouteUpdate( );				
@@ -351,7 +404,7 @@ void IQRouter::_InternalStep( )
     _SWAllocUpdate( );
     activity = activity || !_sw_alloc_vcs.empty();
   }
-  if(!_crossbar_flits.empty() || !buffer[this->GetID()][3].empty())		//PANE support
+  if(!_crossbar_flits.empty() || !buffer[this->GetID()][3].empty())
   {
 	if(!buffer[this->GetID()][3].empty())
 		_SwitchUpdate( );						
@@ -382,10 +435,13 @@ bool IQRouter::_ReceiveFlits( )
   bool activity = false;
   for(int input = 0; input < _inputs; ++input)
   { 
+//	if(this->GetID()==14 && input==4)
+//		cout<<"R14C0P4:\n";
     Flit * const f = _input_channels[input]->Receive();
     if(f)
     {
-		_in_queue_flits.push_back(make_pair(input, f));
+//      _in_queue_flits.insert(make_pair(input, f));
+	_in_queue_flits.push_back(make_pair(input, f));
       activity = true;
 //      printf("\nTime: %d, routerid: %d,f->id: [%d],ReceiveFlit, f->vc: %d, f->src: %d, f->dest: %d, input port: %d\n", GetSimTime(), this->GetID(), f->id, f->vc, f->src, f->dest, input); //Sneha
 //	printf("\nTime: %d, routerid: [%d][%d],ReceiveFlit,f->id: [%d], f->vc: %d, f->src: %d, f->dest: %d\n", GetSimTime(), this->GetID(),input, f->id, f->vc, f->src, f->dest);//Debug
@@ -410,7 +466,7 @@ Credit * const c = _output_credits[output]->Receive();
 }
 
 //-----------------------------------------------------------
-// Proc_credits (after permission buffer empty)			//PANE support
+// Proc_credits (after permission buffer empty)			//*Sarab
 //-----------------------------------------------------------
 void IQRouter::CallLeftOverCredits( )
 {
@@ -431,23 +487,35 @@ void IQRouter::CallLeftOverCredits( )
 	}
 }
 //------------------------------------------------------------------------------
-// input queuing		//PANE Support
+// input queuing
 //------------------------------------------------------------------------------
 
 void IQRouter::_InputQueuing( )
 {
-	int flag[5]={0,0,0,0,0};		//Responsible for allowing only one flit per input-port
+//	cout<<"IQ_Start\n";
+//cout<<"-------------\n";
+//cout<<"IQ Contents:\n";
+//for(std::deque<pair<int, Flit *> >::iterator it = _in_queue_flits.begin(); it != _in_queue_flits.end(); ++it)
+//{
+//	Flit * const f = it->second;
+//	cout<<this->GetID()<<" has id "<<f->id<<endl;
+//}
+//cout<<"-------------\n";
+int flag[5]={0,0,0,0,0};
   std::deque<pair<int, Flit *> >::iterator iter = _in_queue_flits.begin();
   while(iter != _in_queue_flits.end())					
   {
 	
 	    int const input = iter->first;
 	    Flit * const f = iter->second;
+//		cout<<"Check:"<<this->GetID()<<" has id "<<f->id<<endl;
 		if((flag[input] == 0) && (std::find(buffer[this->GetID()][0].begin(), buffer[this->GetID()][0].end(), f->id) != buffer[this->GetID()][0].end()))
 		{
 			int const vc = f->vc;
+//				cout<<"->1\n";
 			    Buffer * const cur_buf = _buf[input];
-			if(f->head==true && f->tail==true)		//For packet size = 1
+//			   	 cout<<"Check2:"<<this->GetID()<<" has id "<<f->id<<",VC State:"<<_buf[input]->GetState(vc)<<endl;
+			if(f->head==true && f->tail==true)		
 			{
 			    if(_buf[input]->GetState(vc) == VC::idle)
 			    {
@@ -455,44 +523,57 @@ void IQRouter::_InputQueuing( )
 					_bufferMonitor->write(input, f) ;			
 					cur_buf->SetState(vc, VC::routing);
 					_route_vcs.push_back(make_pair(-1, make_pair(input, vc)));
+
 					flag[input]=1;
-					std::string myvariable_router = patch::to_string(f->id);		//FlitID
+					std::string myvariable_router = patch::to_string(f->id);
 					myvariable_router.append("\n");
+//					myvariable_router.append(patch::to_string(f->vc));
+//					myvariable_router.append("\n");
 					str_tbs_router = &myvariable_router[0];	
 					::send(getfd((this->GetID()),(0),(input)),str_tbs_router , strlen(str_tbs_router), 0);
+//					cout<<"Sent: ["<<this->GetID()<<"][0]["<<input<<"]->ID:"<<str_tbs_router<<endl;
 //				    printf("\nTime: %d, routerid: %d,f->id: [%d],InputQueuing, f->vc: %d, f->src: %d, f->dest: %d, input port: %d\n", GetSimTime(), this->GetID(), f->id, f->vc, f->src, f->dest, input); //Sneha
 //				printf("\nTime: %d, routerid: [%d][%d],IQ,f->id: [%d], f->vc: %d, f->src: %d, f->dest: %d\n", GetSimTime(), this->GetID(),input, f->id, f->vc, f->src, f->dest);//Debug
+	
 			    }
-			    else 
+			    else /*if((_buf[input]->GetState(vc) == VC::active) && (_buf[input]->FrontFlit(vc) == f))*/
 			    {
+	//				cout<<"Backchannel"<<endl;
+	//				printf("Sending out -1 to re-issue flit in SwitchUpdate of %d\n",f->id);
 					iter++;
 					continue;
 			    }
 			}
-			else		//For packet size >1
+			else
 			{
 				if(_buf[input]->GetState(vc) == VC::idle && f->head==true)
-		    	{
+			    	{
 					cur_buf->AddFlit(vc, f);	
 					_bufferMonitor->write(input, f) ;		
-					cur_buf->SetState(vc, VC::routing);	
+					cur_buf->SetState(vc, VC::routing);
 					_route_vcs.push_back(make_pair(-1, make_pair(input, vc)));
+
 					flag[input]=1;
-					std::string myvariable_router = patch::to_string(f->id);		//FlitID
+					std::string myvariable_router = patch::to_string(f->id);
 					myvariable_router.append("\n");
+//					myvariable_router.append(patch::to_string(f->vc));
+//					myvariable_router.append("\n");
 					str_tbs_router = &myvariable_router[0];	
+//					cout<<"Sent: ["<<this->GetID()<<"][0]["<<input<<"]->ID:"<<str_tbs_router<<endl;
 					::send(getfd((this->GetID()),(0),(input)),str_tbs_router , strlen(str_tbs_router), 0);
 //				    printf("\nTime: %d, routerid: %d,f->id: [%d],InputQueuing, f->vc: %d, f->src: %d, f->dest: %d, input port: %d\n", GetSimTime(), this->GetID(), f->id, f->vc, f->src, f->dest, input); //Sneha
 //			printf("\nTime: %d, routerid: [%d][%d],IQ,f->id: [%d], f->vc: %d, f->src: %d, f->dest: %d\n", GetSimTime(), this->GetID(),input, f->id, f->vc, f->src, f->dest);//Debug
 	
 			   	}
 			   	else if((_buf[input]->GetState(vc) == VC::active) && (_buf[input]->FrontFlit(vc) == f))
-		    	{
+			    	{
+	//				cout<<"Backchannel"<<endl;
+	//				printf("Sending out -1 to re-issue flit in SwitchUpdate of %d\n",f->id);
 					iter++;
 					continue;
-		    	}	
-		    	else if(f->head==false)
-		     	{
+			    	}	
+			    	else if(f->head==false)
+			     	{
 					bool flag2=false;
 					std::deque<pair<int, Flit *> >::iterator iter2 = _in_queue_flits.begin();
  					while(iter2 != _in_queue_flits.end())
@@ -509,7 +590,15 @@ void IQRouter::_InputQueuing( )
 					{
 						cur_buf->AddFlit(vc, f);	
 						_bufferMonitor->write(input, f) ;
+
 						flag[input]=1;
+//						std::string myvariable_router = patch::to_string(f->id);
+//						myvariable_router.append("\n");
+//						myvariable_router.append(patch::to_string(f->vc));
+//						myvariable_router.append("\n");
+//						str_tbs_router = &myvariable_router[0];	
+////						cout<<"Sent: ["<<this->GetID()<<"][0]["<<input<<"]->ID:"<<str_tbs_router<<endl;
+//						::send(getfd((this->GetID()),(0),(input)),str_tbs_router , strlen(str_tbs_router), 0);
 //						printf("\nTime: %d, routerid: %d,f->id: [%d],InputQueuing(body/tail), f->vc: %d, f->src: %d, f->dest: %d, input port: %d\n", GetSimTime(), this->GetID(), f->id, f->vc, f->src, f->dest, input); //Sneha
 //					printf("\nTime: %d, routerid: [%d][%d],IQ,f->id: [%d], f->vc: %d, f->src: %d, f->dest: %d\n", GetSimTime(), this->GetID(),input, f->id, f->vc, f->src, f->dest);//Debug
 					}
@@ -525,21 +614,30 @@ void IQRouter::_InputQueuing( )
 					continue;
 				}
 			}
-			buffer[this->GetID()][0].erase(std::find(buffer[this->GetID()][0].begin(), buffer[this->GetID()][0].end(), f->id) );
-			std::deque<pair<int, Flit *> >::iterator j = iter;
-			_in_queue_flits.erase(iter);
-			if((j == iter) && (iter !=_in_queue_flits.end()))
-				iter++;
-			if(buffer[this->GetID()][0].empty())
-				break;
-			if(_in_queue_flits.empty())
-				break;
+				buffer[this->GetID()][0].erase(std::find(buffer[this->GetID()][0].begin(), buffer[this->GetID()][0].end(), f->id) );
+	//			cout<<"Buffer Erased it["<<this->GetID()<<"]"<<(buffer[this->GetID()][1].size())<<endl;
+	//			cout<<"Erase it["<<this->GetID()<<"]"<<(_in_queue_flits.size())<<endl;
+				std::deque<pair<int, Flit *> >::iterator j = iter;
+				_in_queue_flits.erase(iter);
+	//			cout<<"Erased["<<this->GetID()<<"]"<<(_in_queue_flits.size())<<endl;
+				if((j == iter) && (iter !=_in_queue_flits.end()))
+					iter++;
+				if(buffer[this->GetID()][0].empty())
+					break;
+				if(_in_queue_flits.empty())
+					break;
 		}
 		else
 		{
+//			cout<<"Here\n";
 			iter++;
 		}
   }
+	for(int i=0;i<5;i++)
+	{
+//		if(flag[i]==1)
+//			::send(getfd((this->GetID()),(0),(i)),"*", strlen("*"), 0);
+	}
 
   while(!_proc_credits.empty())
   {
@@ -557,11 +655,12 @@ void IQRouter::_InputQueuing( )
     c->Free();
     _proc_credits.pop_front();
   }
+//	cout<<"IQ_Stop\n";
 }
 
 
 //------------------------------------------------------------------------------
-// routing		//PANE Support
+// routing
 //------------------------------------------------------------------------------
 
 void IQRouter::_RouteEvaluate( )
@@ -579,7 +678,8 @@ void IQRouter::_RouteEvaluate( )
 
 void IQRouter::_RouteUpdate( )
 {
-	while(!_route_vcs.empty())		//Transferring flits from _route_vcs to buffer_routeup
+//	cout<<"RU_Start\n";
+	while(!_route_vcs.empty())
 	{
 	    pair<int, pair<int, int> > const & item = _route_vcs.front();
 	    int const time = item.first;
@@ -590,11 +690,14 @@ void IQRouter::_RouteUpdate( )
 	      break;
 	    }
 		buffer_routeup[this->GetID()].push_back(make_pair(_buf[input],_route_vcs.front()));
+//		cout<<"Route_Update.receive(push:"<<_buf[input]->FrontFlit(vc)->id<<")\n";
 		_route_vcs.pop_front();
 	}
+//	cout<<"RU_Start1\n";
 	 deque<pair<Buffer *, pair<int, pair<int, int> > > >::iterator iter = buffer_routeup[this->GetID()].begin();
  	 while(iter != buffer_routeup[this->GetID()].end())
 	{
+//		cout<<"RU_Start2\n";
 		pair<int, pair<int, int> > const & item = iter->second;
 		int const time = item.first;
 		int const input = item.second.first;
@@ -602,6 +705,9 @@ void IQRouter::_RouteUpdate( )
 		Buffer * const cur_buf = _buf[input];
 		if((std::find(buffer[this->GetID()][1].begin(), buffer[this->GetID()][1].end(), cur_buf->FrontFlit(vc)->id) != buffer[this->GetID()][1].end()))
 		{
+//		    cout<<"RU_Start3\n";
+			
+//		    Buffer * const cur_buf = iter->first;
 		    Flit * const f = cur_buf->FrontFlit(vc);
 			::send(getfd((this->GetID()),(1),(input)),str_tbs, strlen(str_tbs), 0);
 //		    printf("\nTime: %d, routerid: %d,f->id: [%d],RouteUpdate, f->vc: %d, f->src: %d, f->dest: %d, input port: %d\n", GetSimTime(), this->GetID(), f->id, f->vc, f->src, f->dest, input); //Sneha
@@ -613,12 +719,18 @@ void IQRouter::_RouteUpdate( )
 		      _vc_alloc_vcs.push_back(make_pair(-1, make_pair(-1,make_pair(iter->first,iter->second))));
 		    }
 		    // NOTE: No need to handle NOQ here, as it requires lookahead routing!
+//			cout<<"buffer.size="<<buffer[this->GetID()][2].size()<<endl;
 			buffer[this->GetID()][1].erase(std::find(buffer[this->GetID()][1].begin(), buffer[this->GetID()][1].end(), cur_buf->FrontFlit(vc)->id) );
+//			cout<<"buffer(after).size="<<buffer[this->GetID()][2].size()<<endl;
+//			cout<<"buffer_routeup.size="<<buffer_routeup[this->GetID()].size()<<endl;
+//			cout<<"Route_Update.pop(pop:"<<f->id<<")\n";
 			std::deque<pair<Buffer *, pair<int, pair<int, int> > > >::iterator j = iter;
 			buffer_routeup[this->GetID()].erase(iter);
+//			cout<<"buffer_routeup(after).size="<<buffer_routeup[this->GetID()].size()<<endl;
 			if((j == iter) && (iter !=buffer_routeup[this->GetID()].end()))
 			{	
 				iter++;
+//				cout<<"EXECUTED\n";
 			}
 			if(buffer[this->GetID()][1].empty())
 				break;
@@ -629,17 +741,25 @@ void IQRouter::_RouteUpdate( )
 		{
 			iter++;
 		}
+//		if(this->GetID()==3 && input==1)
+//		{
+//			cout<<"RU------\n";
+//			cout<<"Curr Buf at input:"<<input;
+//				cur_buf->printbuf(vc);
+//		}
 	}
+//	cout<<"RU_Stop\n";
 }
 
 //------------------------------------------------------------------------------
-// VC allocation		//PANE Support
+// VC allocation
 //------------------------------------------------------------------------------
 
 void IQRouter::_VCAllocEvaluate( )
 {
   for(deque<pair<int, pair<int, pair<Buffer *, pair<int, pair<int, int> > > > > >::iterator iter = _vc_alloc_vcs.begin(); iter != _vc_alloc_vcs.end(); ++iter)
   {
+//	printf("\n VCAllocEvaluate!\n");
     int const time = iter->first;
     if(time >= 0)
     {
@@ -648,6 +768,7 @@ void IQRouter::_VCAllocEvaluate( )
 	pair<int, pair<int, int> > const & item = iter->second.second.second;
     int const input = item.second.first;
     int const vc = item.second.second;
+//    Buffer const * const cur_buf = iter->second.second.first;
 	Buffer const * const cur_buf = _buf[input];
     OutputSet const * const route_set = cur_buf->GetRouteSet(vc);
     int const out_priority = cur_buf->GetPriority(vc);
@@ -732,6 +853,7 @@ void IQRouter::_VCAllocEvaluate( )
     {
       continue;
     }
+//    Buffer const * const cur_buf = iter->second.second.first;
 	Buffer const * const cur_buf = _buf[input];
 	
     Flit * f = cur_buf->FrontFlit(vc);
@@ -750,6 +872,12 @@ void IQRouter::_VCAllocEvaluate( )
     {
       iter->second.first = STALL_BUFFER_CONFLICT;
     }
+//	if(this->GetID()==3 && input==1)
+//		{
+//			cout<<"VCE------\n";
+//			cout<<"Curr Buf at input:"<<input;
+//				cur_buf->printbuf(vc);
+//		}
   }
 
   if(_vc_alloc_delay <= 1)
@@ -784,10 +912,12 @@ void IQRouter::_VCAllocEvaluate( )
   }
 }
 
-void IQRouter::_VCAllocUpdate( )				//PANE Support
+void IQRouter::_VCAllocUpdate( )
 {
+//	cout<<"VC_Start\n";
 	int size = _vc_alloc_vcs.size();
   for(int i = 0; i < size ; i++)
+//  while(!_vc_alloc_vcs.empty())	
   {
     pair<int, pair<int, pair<Buffer *, pair<int, pair<int, int> > > > >  const & item = _vc_alloc_vcs.front();
     int const time = item.first;
@@ -801,6 +931,7 @@ void IQRouter::_VCAllocUpdate( )				//PANE Support
 	if((std::find(buffer[this->GetID()][2].begin(), buffer[this->GetID()][2].end(), cur_buf->FrontFlit(vc)->id) != buffer[this->GetID()][2].end()))
 	{
 		
+//	    Buffer * const cur_buf = item.second.second.first;
 	    Flit const * const f = cur_buf->FrontFlit(vc);
 	    int const output_and_vc = item.second.first;
 	    if(output_and_vc >= 0)
@@ -813,6 +944,9 @@ void IQRouter::_VCAllocUpdate( )				//PANE Support
 	      cur_buf->SetState(vc, VC::active);
 	      if(!_speculative)
 	      {
+//		std::string myvariable_router = patch::to_string(f->id);
+//		myvariable_router.append("\n");
+//		str_tbs_router = &myvariable_router[0];	
 		::send(getfd((this->GetID()),(2),(input)),str_tbs, strlen(str_tbs), 0);
 //	    printf("\nTime: %d, routerid: %d,f->id: [%d],VCUpdate, f->vc: %d, f->src: %d, f->dest: %d, input port: %d\n", GetSimTime(), this->GetID(), f->id, f->vc, f->src, f->dest, input); //Sneha
 //		printf("\nTime: %d, routerid: [%d][%d],VC,f->id: [%d], f->vc: %d, f->src: %d, f->dest: %d\n", GetSimTime(), this->GetID(),input, f->id, f->vc, f->src, f->dest);//Debug
@@ -826,13 +960,21 @@ void IQRouter::_VCAllocUpdate( )				//PANE Support
 	      _vc_alloc_vcs.push_back(make_pair(-1, make_pair(-1,item.second.second)));
 	    }
 	    _vc_alloc_vcs.pop_front();
+										//*Sarab
 	}
 	else
 	{
 		_vc_alloc_vcs.push_back(make_pair(-1, make_pair(-1,item.second.second)));	
 		_vc_alloc_vcs.pop_front();
 	}
+//	if(this->GetID()==3 && input==1)
+//		{
+//			cout<<"VCU------\n";
+//			cout<<"Curr Buf at input:"<<input;
+//				cur_buf->printbuf(vc);
+//		}
   }
+//	cout<<"VC_Stop\n";
 }
 
 //------------------------------------------------------------------------------
@@ -861,6 +1003,7 @@ bool IQRouter::_SWAllocAddReq(int input, int vc, int output)
   int const expanded_output = output * _output_speedup + input % _output_speedup;
   Buffer const * const cur_buf = _buf[input];
   Flit const * const f = cur_buf->FrontFlit(vc);
+//	cout<<"\n-----5------SwitchAlloc["<<this->GetID()<<"]->"<<f->id<<endl;
   if((_switch_hold_in[expanded_input] < 0) && (_switch_hold_out[expanded_output] < 0))
   {
     Allocator * allocator = _sw_allocator;
@@ -893,7 +1036,7 @@ bool IQRouter::_SWAllocAddReq(int input, int vc, int output)
   return false;
 }
 
-void IQRouter::_SWAllocEvaluate( )		//PANE Support
+void IQRouter::_SWAllocEvaluate( )
 {
   bool watched = false;
 
@@ -906,6 +1049,7 @@ void IQRouter::_SWAllocEvaluate( )		//PANE Support
     }
     int const input = iter->second.second.second.first;
     int const vc = iter->second.second.second.second;
+//    Buffer const * const cur_buf = iter->second.second.first;
 	Buffer const * const cur_buf = _buf[input];
     Flit const * const f = cur_buf->FrontFlit(vc);
     if(cur_buf->GetState(vc) == VC::active) {
@@ -914,8 +1058,10 @@ void IQRouter::_SWAllocEvaluate( )		//PANE Support
       BufferState const * const dest_buf = _next_buf[dest_output];
       if(dest_buf->IsFullFor(dest_vc) || ( _output_buffer_size!=-1  && _output_buffer[dest_output].size()>=(size_t)(_output_buffer_size)))
       {
-		iter->second.first = dest_buf->IsFull() ? STALL_BUFFER_FULL : STALL_BUFFER_RESERVED;
-		continue;
+		
+	
+	iter->second.first = dest_buf->IsFull() ? STALL_BUFFER_FULL : STALL_BUFFER_RESERVED;
+	continue;
       }
       bool const requested = _SWAllocAddReq(input, vc, dest_output);
       watched |= requested && f->watch;
@@ -1001,6 +1147,7 @@ void IQRouter::_SWAllocEvaluate( )		//PANE Support
     {
       continue;
     }
+//    Buffer const * const cur_buf = iter->second.second.first;
 	Buffer const * const cur_buf = _buf[input];
     Flit const * const f = cur_buf->FrontFlit(vc);
     int const expanded_input = input * _input_speedup + vc % _input_speedup;
@@ -1076,6 +1223,7 @@ void IQRouter::_SWAllocEvaluate( )		//PANE Support
       int const input = iter->second.second.second.first;
       int const vc = iter->second.second.second.second;
       int const expanded_input = input * _input_speedup + vc % _input_speedup;
+//      Buffer const * const cur_buf = iter->second.second.first;
 		Buffer const * const cur_buf = _buf[input];
       Flit const * const f = cur_buf->FrontFlit(vc);
       if((_switch_hold_in[expanded_input] >= 0) || (_switch_hold_out[expanded_output] >= 0))
@@ -1171,7 +1319,7 @@ void IQRouter::_SWAllocEvaluate( )		//PANE Support
   }
 }
 
-void IQRouter::_SWAllocUpdate( )			//PANE Support
+void IQRouter::_SWAllocUpdate( )
 {
   while(!_sw_alloc_vcs.empty())
   {
@@ -1184,16 +1332,18 @@ void IQRouter::_SWAllocUpdate( )			//PANE Support
     int const input = item.second.second.second.first;
     int const vc = item.second.second.second.second;
 	Buffer * const cur_buf = _buf[input];
+//    Buffer * const cur_buf = item.second.second.first;
     Flit * const f = cur_buf->FrontFlit(vc);
 	if(cur_buf->Empty(vc))
 	{
+//		if(f->tail==false)
 			_sw_alloc_vcs.push_back(make_pair(-1, make_pair(-1,item.second.second)));
 		_sw_alloc_vcs.pop_front();
 		continue;
 	}
     int const expanded_output = item.second.first;
 	bool flag=false;
-	if(f && f->tail==true && (expanded_output >= 0))		//PANE Support		
+	if(f && f->tail==true && (expanded_output >= 0))		//*Sarab		
 	{		
 		for(deque<pair<int, pair<Flit *, pair<int, int> > > >::iterator iterc = _crossbar_flits.begin(); iterc != _crossbar_flits.end(); ++iterc)
 		{
@@ -1204,8 +1354,8 @@ void IQRouter::_SWAllocUpdate( )			//PANE Support
 				break;
 			}
 		}
-	}					
-    if((expanded_output >= 0) && (flag == false))		
+	}					//*Sarab
+    if((expanded_output >= 0) && (flag == false))		//Sarab
     {
       int const expanded_input = input * _input_speedup + vc % _input_speedup;
       int const output = expanded_output / _output_speedup;
@@ -1250,6 +1400,7 @@ void IQRouter::_SWAllocUpdate( )			//PANE Support
     }
 	if(cur_buf->Empty(vc) && f->tail==false)
 	{
+//		cout<<"Rogue["<<this->GetID()<<"]->"<<f->id<<endl;
 		_sw_alloc_vcs.push_back(make_pair(-1, make_pair(-1,item.second.second)));
 	}
 	_sw_alloc_vcs.pop_front();
@@ -1258,7 +1409,7 @@ void IQRouter::_SWAllocUpdate( )			//PANE Support
 
 
 //------------------------------------------------------------------------------
-// switch traversal		//PANE Support
+// switch traversal
 //------------------------------------------------------------------------------
 
 void IQRouter::_SwitchEvaluate( )
@@ -1278,29 +1429,46 @@ void IQRouter::_SwitchEvaluate( )
   }
 }
 
-void IQRouter::_SwitchUpdate( )			//PANE Support
+void IQRouter::_SwitchUpdate( )
 {
+//	cout<<"SW_Start\n";
+//	cout<<"----------------------\n";
+//	cout<<"Crossbar Contents["<<this->GetID()<<"]"<<endl;
+// for(deque<pair<int, pair<Flit *, pair<int, int> > > >::iterator itern = _crossbar_flits.begin(); itern != _crossbar_flits.end(); ++itern)
+//	{
+//		 Flit const * const f = itern->second.first;
+//		int const expanded_input = itern->second.second.first;//Remove
+//		int const input = expanded_input / _input_speedup;//Remove to place
+//		cout<<"Crossbar["<<this->GetID()<<"]["<<input<<"]->"<<f->id<<endl;
+//	}
+//	cout<<"----------------------\n";
+//  while(!_crossbar_flits.empty())
 	int size = _crossbar_flits.size();
   for(int i = 0; i < size ; i++)
   {
     pair<int, pair<Flit *, pair<int, int> > > const & item = _crossbar_flits.front();
     int const time = item.first;
 	 Flit * const f = item.second.first;
-	int const expanded_input = item.second.second.first;
-	int const input = expanded_input / _input_speedup;
+	int const expanded_input = item.second.second.first;//Remove
+	int const input = expanded_input / _input_speedup;//Remove to place
+//	cout<<"Crossbar4["<<this->GetID()<<"]["<<input<<"]->"<<f->id<<endl;
+//	cout<<"Switch["<<this->GetID()<<"]->"<<f->id<<endl;
     if((time < 0) || (GetSimTime() < time))
     {
 	_crossbar_flits.push_back(make_pair(time,item.second));
 	 _crossbar_flits.pop_front();
       		continue;
     }
-    if((std::find(buffer[this->GetID()][3].begin(), buffer[this->GetID()][3].end(), f->id) != buffer[this->GetID()][3].end()))
+//   	cout<<"Crossbar4a["<<this->GetID()<<"]["<<input<<"]->"<<f->id<<endl;
+    if((std::find(buffer[this->GetID()][3].begin(), buffer[this->GetID()][3].end(), f->id) != buffer[this->GetID()][3].end()) /*|| f->head==false*/)
     {
+//	    int const expanded_input = item.second.second.first;
+//	    int const input = expanded_input / _input_speedup;
 	    int const expanded_output = item.second.second.second;
 	    int const output = expanded_output / _output_speedup;
 		if(f->head == true)
 		{	
-			std::string myvariable_router = patch::to_string(output+1);		//Output port
+			std::string myvariable_router = patch::to_string(output+1);
 			myvariable_router.append("\n");
 			str_tbs_router = &myvariable_router[0];		
 			::send(getfd((this->GetID()),(3),(input)),str_tbs_router, strlen(str_tbs_router), 0);			
@@ -1326,6 +1494,7 @@ void IQRouter::_SwitchUpdate( )			//PANE Support
 	 _crossbar_flits.pop_front();
      }
   }
+//	cout<<"SW_Stop\n";
 }
 
 

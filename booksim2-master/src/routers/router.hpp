@@ -114,7 +114,7 @@ public:
   virtual void ReadInputs( ) = 0;
   virtual void Evaluate( );
   virtual void WriteOutputs( ) = 0;
-  virtual void CallLeftOverCredits( ) = 0;		//PANE Support
+  virtual void CallLeftOverCredits( ) = 0;	//*Sarab
 
   void OutChannelFault( int c, bool fault = true );
   bool IsFaultyOutput( int c ) const;

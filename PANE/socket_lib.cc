@@ -1,7 +1,4 @@
-/*
-PANE/socket_lib.cc
-Header file
-*/
+
 #include<stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -10,26 +7,26 @@ Header file
 #include <unistd.h>
 #include <omnetpp.h>
 #include <poll.h>
-#define numRouters 16		//Represents the number of Routers in the network
-#define numClients 4		//Represents the division of a Router
+#define numRouters 16
+#define numClients 4
 
 using namespace omnetpp;
 
-const char * ADDR[numRouters][numClients][5];		//UNIX Domain Socket Path Address
+const char * ADDR[numRouters][numClients][5];
 
-int fromlen;		//(UNIX DOMAIN SOCKET: addrlen) contains the size of structure pointed by the socket address
-/*register*/ int s[numRouters][numClients][5], ns[numRouters][numClients][5], len;		//(UNIX DOMAIN SOCKET parameters)
-struct sockaddr_un saun[numRouters][numClients][5], fsaun[numRouters][numClients][5];		//(UNIX DOMAIN SOCKET parameters)
+int fromlen;
+/*register*/ int s[numRouters][numClients][5], ns[numRouters][numClients][5], len;
+struct sockaddr_un saun[numRouters][numClients][5], fsaun[numRouters][numClients][5];
 
 //Pollfds
-struct pollfd fds[numRouters][4][5];		//(UNIX DOMAIN SOCKET) Holds the set of file descriptors(Core->GenFlit) to be monitored by poll (http://man7.org/linux/man-pages/man2/poll.2.html)
-FILE *fp[numRouters][numClients][5];		//(UNIX DOMAIN SOCKET) file pointer
+struct pollfd fds[numRouters][4][5];
+FILE *fp[numRouters][numClients][5];
 
-SimTime currenttime;		//Represents last time at which controller was evaluated
+SimTime currenttime;
 
-bool hasmsg[numRouters][numClients];		//Flip value to remove redundancy of poll msg in an epoch
+bool hasmsg[numRouters][numClients];
 
-int hasvalue[numRouters][numClients][5];	//Counter for data written in the RCP-data socket (Sensible for only clients, C=0 & C=3)
+int hasvalue[numRouters][numClients][5];
 
 pollfd getfds(int R,int C,int P)
 {
@@ -50,15 +47,15 @@ void setup_pollfd()
 		{
 		    for(P=0;P<5;P++)
 		    {
-				fp[R][C][P] = fdopen(ns[R][C][P], "r");
-				fds[R][C][P].fd = ns[R][C][P];                  //FDS-Client
-				fds[R][C][P].events = POLLIN;
+			fp[R][C][P] = fdopen(ns[R][C][P], "r");
+			fds[R][C][P].fd = ns[R][C][P];                  //FDS-Client
+			fds[R][C][P].events = POLLIN;
 		    }
 		}
 	}
 }
 
-void setcontrollertime(SimTime current_time)
+bool setcontrollertime(SimTime current_time)
 {
 	currenttime = current_time;
 }
@@ -95,32 +92,38 @@ void resethasvalue(int R,int C,int P)
 
 void create_socket(int R,int C,int P)
 {
-	if ((s[R][C][P] = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)		//creates a socket
-    {
+	if ((s[R][C][P] = socket(AF_UNIX, SOCK_STREAM, 0)) < 0)
+        {
 		perror("server: socket");
 		exit(1);
-    }
-    saun[R][C][P].sun_family = AF_UNIX;		//set type of socket to be UNIX DOMAIN
-    strcpy(saun[R][C][P].sun_path, ADDR[R][C][P]);
+        }
+//	int on=1;
+//	if((setsockopt(s[R][C][P], SOL_SOCKET,  SO_REUSEADDR,(char *)&on, sizeof(on))) < 0)		//Can remove
+//	{
+//		perror("setsockopt() failed");
+//		exit(1);
+//	}
+        saun[R][C][P].sun_family = AF_UNIX;
+        strcpy(saun[R][C][P].sun_path, ADDR[R][C][P]);
 
-    unlink(ADDR[R][C][P]);		//unlink from any other connection
-    len = sizeof(saun[R][C][P].sun_family) + strlen(saun[R][C][P].sun_path);
+        unlink(ADDR[R][C][P]);
+        len = sizeof(saun[R][C][P].sun_family) + strlen(saun[R][C][P].sun_path);
 
-    if (bind(s[R][C][P],(struct sockaddr *) &saun[R][C][P], len) < 0)		//binds socket to the address
-    {
+        if (bind(s[R][C][P],(struct sockaddr *) &saun[R][C][P], len) < 0)
+        {
 		perror("server: bind");
 		exit(1);
-    }
-    if (listen(s[R][C][P], 5) < 0)		//listen for incoming connections from any client programs
-    {
+        }
+        if (listen(s[R][C][P], 5) < 0)
+        {
 		perror("server: listen");
 		exit(1);
-    }
-    if ((ns[R][C][P] = accept(s[R][C][P], (struct sockaddr *) &fsaun[R][C][P],(socklen_t*) &fromlen)) < 0)		//accept a connection from a client
-    {
+        }
+        if ((ns[R][C][P] = accept(s[R][C][P], (struct sockaddr *) &fsaun[R][C][P],(socklen_t*) &fromlen)) < 0)
+        {
 		perror("server: accept");
 		exit(1);
-    }
+        }
 }
 
 int getfd(int R,int C,int P)

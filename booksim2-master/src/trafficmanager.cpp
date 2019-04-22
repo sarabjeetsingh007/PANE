@@ -15,10 +15,7 @@
 #include "random_utils.hpp" 
 #include "vc.hpp"
 
-using namespace std;
-
-//*PANE support
-#include <sys/types.h>
+#include <sys/types.h>		//*Sarab
 #include <sys/un.h>		
 #include <sys/socket.h>		
 #include <stdio.h>
@@ -26,7 +23,7 @@ using namespace std;
 #include <stdlib.h>
 #include <deque>
 #include "socket_lib.hpp"
-namespace patch				//Patch for std::to_string()
+namespace patch
 {
     template < typename T > std::string to_string( const T& n )
     {
@@ -35,14 +32,23 @@ namespace patch				//Patch for std::to_string()
         return stm.str() ;
     }
 }				
+using namespace std;
 
-std::deque<pair<int, int> > genque;		//Records the generated flits and their size 
-char *str_tbs_src = "Junk\n";		//Message to be sent through the socket
-char *str_tbs_timer = "Junk\n";		//Message to be sent through the socket		
-FILE *fp_src;		//(UNIX DOMAIN SOCKET) file pointer		
-fd_set writeset;		//(UNIX DOMAIN SOCKET) Represents the file descriptors set
-FILE *fp_timer;			//(UNIX DOMAIN SOCKET) file pointer
-//PANE support*
+char *str_tbs_src = "msg\n";	
+//char *str_tbs_src2 = "msg\n";	
+char char_rcv_src;		
+FILE *fp_src;		
+fd_set writeset;
+//int transfer_counter[numRouters][numClients][5];
+//struct timeval tv;	
+
+std::deque<pair<int, int> > genque;
+
+char *str_tbs_timer = "msg\n";		
+char char_rcv_timer;		
+FILE *fp_timer;		
+
+//int hid;	//Sarab*
 
 TrafficManager * TrafficManager::New(Configuration const & config, vector<Network *> const & net)
 {
@@ -64,11 +70,10 @@ TrafficManager * TrafficManager::New(Configuration const & config, vector<Networ
 TrafficManager::TrafficManager( const Configuration &config, const vector<Network *> & net )
   : Module( 0, "traffic_manager" ), _net(net), _empty_network(false), _deadlock_timer(0), _reset_time(0), _drain_time(-1), _cur_id(0), _cur_pid(0), _time(0)
 {
-	//*PANE support
-	FD_ZERO(&writeset);			
-    FD_SET(getfd_src(), &writeset);
-	resetTransferCounter();		//Resets the RCP socket counter
-	//PANE support*
+	FD_ZERO(&writeset);			//*Sarab
+        FD_SET(getfd_src(), &writeset);
+	resetTransferCounter(); 
+					//Sarab*
 
   _nodes = _net[0]->NumNodes( );
   _routers = _net[0]->NumRouters( );
@@ -505,7 +510,7 @@ int TrafficManager::_GeneratePacket( int source, int dest, int size, int cl, int
     f->vc  = -1;
     f->repeat_change = 0;		//Sneha
     Generated_flits++;			//Sneha
-	f->starttime = (int)(GetSimTime());		//PANE support
+    	f->starttime = (int)(GetSimTime());	//Sarab
 //    printf("\nTime:,%d,%d,[%d][%d],GenFlit,%d\n", GetSimTime(), f->src, f->id, f->pid, f->vc); //*Sneha
 //    int junk; cin >>junk;
 
@@ -535,7 +540,7 @@ int TrafficManager::_GeneratePacket( int source, int dest, int size, int cl, int
 
     _partial_packets[cl][source].push_back(f);
   }
-	genque.push_back(make_pair(size,source));	//PANE support
+	genque.push_back(make_pair(size,source));	//*Sarab
   return pid;
 }
 
@@ -606,6 +611,8 @@ void TrafficManager::_Step( )
 	}
 
 	Flit * const cf = pp.front();
+//	if(n==14)
+//		cout<<GetSimTime()<<"s:Agent:"<<cf->id<<endl;
 	if(f && (f->pri >= cf->pri))
 	{
 	  continue;
@@ -648,6 +655,8 @@ void TrafficManager::_Step( )
 	{
 	  if(dest_buf->IsFullFor(cf->vc))
 	  {
+//		if(n==14)
+//			cout<<GetSimTime()<<"s:Went Rogue:"<<cf->id<<endl;
 	  }
 	  else
 	  {
@@ -711,8 +720,8 @@ void TrafficManager::_Step( )
     _net[subnet]->Evaluate( );
     _net[subnet]->WriteOutputs( );
   }
-	//*PANE support
-	fp_src = fdopen(getfd_src(), "r");		//Open file for writing
+								//*Sarab
+	fp_src = fdopen(getfd_src(), "r");
 	std::deque<pair<int, int> >::iterator iter = genque.begin();	
 	std::string myvariable_src;
 	myvariable_src.append(patch::to_string(genque.size()));
@@ -723,21 +732,22 @@ void TrafficManager::_Step( )
 		myvariable_src.append("\n");
 		myvariable_src.append(patch::to_string(iter->second));
 		myvariable_src.append("\n");
+
 		genque.pop_front();
 		if(genque.size()>0)
 			iter++;
 	}
 	str_tbs_src = &myvariable_src[0];
-	::send(getfd_src(),str_tbs_src , strlen(str_tbs_src), 0);		//Write newly generated flits to the socket file 
-	fp_timer = fdopen(getfd_timer(), "r");			//Open file for writing		
-	::send(getfd_timer(),str_tbs_timer , strlen(str_tbs_timer), 0);		//Write newly generated flits to the socket file
+	::send(getfd_src(),str_tbs_src , strlen(str_tbs_src), 0);
+
+	fp_timer = fdopen(getfd_timer(), "r");			
+	::send(getfd_timer(),str_tbs_timer , strlen(str_tbs_timer), 0);
 	int i=0;
 	int R,C,P;
 	int output=0;
-	char char_rcv_timer;
-	while ((char_rcv_timer = fgetc(fp_timer)) != EOF)		//Read counters indicating number of data writes in all the RCP-data sockets	
+	while ((char_rcv_timer = fgetc(fp_timer)) != EOF)		
 	{
-		if (char_rcv_timer == '*')		//Indicating EOF
+		if (char_rcv_timer == '*')
 			break;
 		else
 		{
@@ -754,7 +764,7 @@ void TrafficManager::_Step( )
 					case 2:	P=output;
 						++i;
 						break;
-					case 3:	setTransferCounter(R,C,P,output);		//Set counter
+					case 3:	setTransferCounter(R,C,P,output);
 						i=0;
 						break;
 				}
@@ -766,7 +776,7 @@ void TrafficManager::_Step( )
 			}
 		}
 	}	
-	//PANE support*
+						//Sarab*
   ++_time;
   assert(_time);
   if(gTrace){
@@ -774,7 +784,7 @@ void TrafficManager::_Step( )
   }
 }
 
-void TrafficManager::CallLeftOvers( )		//PANE support. Takes care of the leftover credits
+void TrafficManager::CallLeftOvers( )		//*Sarab
 {
 	for(int subnet = 0; subnet < _subnets; ++subnet)
 	{
@@ -958,9 +968,7 @@ int junk;
 //	packets_left |= !_total_in_flight_flits[c].empty();
 //      }
 //    }
-
-//*PANE support
-for(int cnt = 0; cnt <1000; cnt++) { 		//TODO: upper bound for cnt
+for(int cnt = 0; cnt <1000; cnt++) { 
 	CallLeftOvers( ); 
       _Step( ); 
 
@@ -979,8 +987,6 @@ for(int cnt = 0; cnt <1000; cnt++) { 		//TODO: upper bound for cnt
 	if(packets_left==false && Credit::OutStanding()==0)
 		break;
     }
-//PANE support*
-
     //wait until all the credits are drained as well
     while(Credit::OutStanding()!=0){
       _Step();
@@ -989,7 +995,8 @@ for(int cnt = 0; cnt <1000; cnt++) { 		//TODO: upper bound for cnt
 
     //for the love of god don't ever say "Time taken" anywhere else the power script depend on it
     cout << "Time taken is " << _time << " cycles" <<endl; 
-	::send(getfd_src(),"q" , strlen("q"), 0);		//PANE support
+//str_tbs_src[1] = '\n';
+	::send(getfd_src(),"q" , strlen("q"), 0);		//*Sarab
     if(_stats_out) {
       WriteStats(*_stats_out);
     }

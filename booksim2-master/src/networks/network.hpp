@@ -93,7 +93,7 @@ public:
   virtual void ReadInputs( );
   virtual void Evaluate( );
   virtual void WriteOutputs( );
-  virtual void CallLeftOverCredits( );		//PANE Support
+  virtual void CallLeftOverCredits( );	//*Sarab
   
   void Display( ostream & os = cout ) const;
   void DumpChannelMap( ostream & os = cout, string const & prefix = "" ) const;
