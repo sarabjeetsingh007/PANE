@@ -1,7 +1,0 @@
-main
-*.o
-*~
-\#*#
-._*
-.Apple*
-.DS_Store
