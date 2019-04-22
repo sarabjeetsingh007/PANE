@@ -1,0 +1,43 @@
+
+//Topology
+topology = mesh;
+k = 3;
+n= 3;
+
+//Routing
+routing_function = dor;
+
+//Flow Control
+num_vcs = 4;
+vc_buf_size = 4;
+wait_for_tail_credit = 0;
+
+//Router Architecture
+vc_allocator = islip;
+sw_allocator = islip;
+
+credit_delay = 2;
+routing_delay = 1;
+vc_alloc_delay = 1;
+sw_alloc_delay = 1;
+
+input_speedup = 1;
+output_speedup = 1;
+internal_speedup = 1.0;
+
+vc_busy_when_full = 0;
+packet_size = 5;
+
+//Simulation
+sim_type = throughput;
+
+//Simulation Data
+traffic = tornado;	//Synthetic
+
+max_samples = 1000000;
+
+injection_rate = 0.5;
+
+//Explicit Data
+//total_time = 622;
+//total_no_of_flits = 3869;

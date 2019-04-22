@@ -1,0 +1,86 @@
+
+package trial2;
+network tictoc1
+{
+    parameters:
+        int r = 0;	//right
+        int l = 1;	//left
+        int d = 2;	//down
+        int u = 3;	//up
+        int c = 4;	//core
+        int numRouters @prompt("Number of routers") = default(4);
+        @display("bgb=1012,797,white,grey30,0");
+    submodules:
+        controller_src: controller_src {
+            @display("p=232,21");
+        }
+        src[numRouters]: mod_src {
+            parameters:
+                @display("i=block/departure,lightGreen;p=58,71,m,4,250,180;is=s");
+        }
+        router[numRouters]: mod_router {
+            parameters:
+                @display("i=device/server,dodgerBlue;p=139,120,m,4,250,180;is=l");
+        }
+        sink[numRouters]: mod_sink {
+            parameters:
+                @display("i=block/arrival,red;p=222,169,m,4,250,180;is=s");
+        }
+    connections:
+//Inter-Router Communication !!Replace with 'n' Systematic manner
+router[0].out[l] --> router[1].in[r];
+router[0].Ack_in[l] <-- router[1].Ack_out[r];
+router[0].out[u] --> router[2].in[d];
+router[0].Ack_in[u] <-- router[2].Ack_out[d];
+router[0].out[r] --> router[1].in[l];
+router[0].Ack_in[r] <-- router[1].Ack_out[l];
+router[0].out[d] --> router[2].in[u];
+router[0].Ack_in[d] <-- router[2].Ack_out[u];
+router[2].out[l] --> router[3].in[r];
+router[2].Ack_in[l] <-- router[3].Ack_out[r];
+router[2].out[u] --> router[0].in[d];
+router[2].Ack_in[u] <-- router[0].Ack_out[d];
+router[2].out[r] --> router[3].in[l];
+router[2].Ack_in[r] <-- router[3].Ack_out[l];
+router[2].out[d] --> router[0].in[u];
+router[2].Ack_in[d] <-- router[0].Ack_out[u];
+router[1].out[l] --> router[0].in[r];
+router[1].Ack_in[l] <-- router[0].Ack_out[r];
+router[1].out[u] --> router[3].in[d];
+router[1].Ack_in[u] <-- router[3].Ack_out[d];
+router[1].out[r] --> router[0].in[l];
+router[1].Ack_in[r] <-- router[0].Ack_out[l];
+router[1].out[d] --> router[3].in[u];
+router[1].Ack_in[d] <-- router[3].Ack_out[u];
+router[3].out[l] --> router[2].in[r];
+router[3].Ack_in[l] <-- router[2].Ack_out[r];
+router[3].out[u] --> router[1].in[d];
+router[3].Ack_in[u] <-- router[1].Ack_out[d];
+router[3].out[r] --> router[2].in[l];
+router[3].Ack_in[r] <-- router[2].Ack_out[l];
+router[3].out[d] --> router[1].in[u];
+router[3].Ack_in[d] <-- router[1].Ack_out[u];
+//Source-Router Communication
+        for i=0..numRouters-1 {
+            src[i].out --> { @display("ls=#F34141"); } --> router[i].in[c];
+            src[i].Ack_in <-- { @display("ls=#F34141"); } <-- router[i].Ack_out[c];
+        }
+        //Sink-Router Communication
+        for i=0..numRouters-1 {
+            router[i].out[c] --> { @display("ls=#F28080"); } --> sink[i].in;
+            router[i].Ack_in[c] <-- { @display("ls=#F28080"); } <-- sink[i].Ack_out;
+        }
+
+        //Src-Controller Communication
+        for i=0..numRouters-1 {
+            controller_src.Ack_in[i] <-- { @display("ls=#2C1CCE,0"); } <-- src[i].out_controller;
+        }
+        for i=0..numRouters-1 {
+            controller_src.out[i] --> { @display("ls=#2C1CCE,0"); } --> src[i].in_controller;
+        }
+
+        //Sink-Controller CountReturn Communication
+        for i=0..numRouters-1 {
+            sink[i].countret --> { @display("ls=,0"); } --> controller_src.countret[i];
+        }
+}

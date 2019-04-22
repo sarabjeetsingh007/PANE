@@ -1,0 +1,36 @@
+// $Id$
+
+topology = mesh;
+k = 8;
+n = 2;
+
+// Routing
+routing_function = romm;
+
+// Flow control
+num_vcs     = 4;
+vc_buf_size = 2;
+wait_for_tail_credit = 1;
+
+// Router architecture
+vc_allocator = islip;
+sw_allocator = islip;
+alloc_iters  = 1;
+
+credit_delay   = 2;
+routing_delay  = 1;
+vc_alloc_delay = 1;
+sw_alloc_delay = 1;
+
+input_speedup     = 2;
+output_speedup    = 1;
+internal_speedup  = 1.0;
+
+vc_busy_when_full = 1;
+
+// Traffic
+workload=netrace({/home/sneha/Desktop/Simulators/ParsecInputs/ferret_64c_simmedium.tra.bz2,100000000,1,2,1,1,0);
+
+// Simulation
+sim_type = workload;
+max_samples = 100000;

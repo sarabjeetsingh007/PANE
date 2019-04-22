@@ -1,0 +1,5 @@
+qmake -code;
+qmake;
+make;
+./code;
+exit;

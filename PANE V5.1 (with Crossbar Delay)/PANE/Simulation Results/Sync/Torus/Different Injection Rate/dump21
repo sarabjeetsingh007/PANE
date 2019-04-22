@@ -1,0 +1,592 @@
+make: Nothing to be done for 'all'.
+Master: Running timer....
+Master: Running SRC....
+BEGIN Configuration File: ./examples/bitrev
+// Topology
+
+topology = torus;
+k = 4;
+n = 2;
+
+// Routing
+routing_function = dim_order;
+
+// Flow control
+num_vcs     = 4;
+vc_buf_size = 4;
+wait_for_tail_credit = 0;
+
+// Router architecture
+vc_allocator = islip;
+sw_allocator = islip;
+alloc_iters  = 1;
+
+credit_delay   = 1;
+routing_delay  = 1;
+vc_alloc_delay = 1;
+sw_alloc_delay = 1;
+
+input_speedup     = 1;
+output_speedup    = 1;
+internal_speedup  = 1.0;
+
+vc_busy_when_full = 0;
+
+// Traffic
+traffic = uniform;
+packet_size = 1;
+
+// Simulation
+sim_type = throughput;
+
+injection_rate = 0.21;
+
+END Configuration File: ./examples/bitrev
+===== Time: 1000 =====
+Class 0:
+Minimum packet latency = 7
+Average packet latency = 25.9212
+Maximum packet latency = 143
+Minimum network latency = 8
+Average network latency = 26.9212
+Maximum network latency = 144
+Slowest packet = 1865
+Minimum flit latency = 8
+Average flit latency = 26.9212
+Maximum flit latency = 144
+Slowest flit = 1865
+Minimum fragmentation = 0
+Average fragmentation = 0
+Maximum fragmentation = 0
+Minimum injected packet rate = 0.183 (at node 9)
+Average injected packet rate = 0.203375
+Maximum injected packet rate = 0.223 (at node 10)
+Minimum accepted packet rate = 0.177 (at node 4)
+Average accepted packet rate = 0.199063
+Maximum accepted packet rate = 0.229 (at node 15)
+Minimum injected flit rate = 0.183 (at node 9)
+Average injected flit rate = 0.203375
+Maximum injected flit rate = 0.223 (at node 10)
+Minimum accepted flit rate = 0.177 (at node 4)
+Average accepted flit rate = 0.199063
+Maximum accepted flit rate = 0.229 (at node 15)
+Total number of injected packets = 3254
+Total number of injected flits = 3254
+Average injected packet length = 1
+Total number of accepted packets = 3185
+Total number of accepted flits = 3185
+Average accepted packet length = 1
+Total in-flight flits = 69 (0 measured)
+===== Time: 2000 =====
+Class 0:
+Minimum packet latency = 7
+Average packet latency = 25.6938
+Maximum packet latency = 143
+Minimum network latency = 8
+Average network latency = 26.6938
+Maximum network latency = 144
+Slowest packet = 1865
+Minimum flit latency = 8
+Average flit latency = 26.6938
+Maximum flit latency = 144
+Slowest flit = 1865
+Minimum fragmentation = 0
+Average fragmentation = 0
+Maximum fragmentation = 0
+Minimum injected packet rate = 0.182 (at node 7)
+Average injected packet rate = 0.204437
+Maximum injected packet rate = 0.22 (at node 11)
+Minimum accepted packet rate = 0.1745 (at node 4)
+Average accepted packet rate = 0.201563
+Maximum accepted packet rate = 0.2195 (at node 7)
+Minimum injected flit rate = 0.182 (at node 7)
+Average injected flit rate = 0.204437
+Maximum injected flit rate = 0.22 (at node 11)
+Minimum accepted flit rate = 0.1745 (at node 4)
+Average accepted flit rate = 0.201563
+Maximum accepted flit rate = 0.2195 (at node 7)
+Total number of injected packets = 6542
+Total number of injected flits = 6542
+Average injected packet length = 1
+Total number of accepted packets = 6450
+Total number of accepted flits = 6450
+Average accepted packet length = 1
+Total in-flight flits = 92 (0 measured)
+===== Time: 3000 =====
+Class 0:
+Minimum packet latency = 7
+Average packet latency = 25.5072
+Maximum packet latency = 107
+Minimum network latency = 8
+Average network latency = 26.5072
+Maximum network latency = 108
+Slowest packet = 7657
+Minimum flit latency = 8
+Average flit latency = 26.5072
+Maximum flit latency = 108
+Slowest flit = 7657
+Minimum fragmentation = 0
+Average fragmentation = 0
+Maximum fragmentation = 0
+Minimum injected packet rate = 0.201 (at node 4)
+Average injected packet rate = 0.210125
+Maximum injected packet rate = 0.226 (at node 6)
+Minimum accepted packet rate = 0.187 (at node 13)
+Average accepted packet rate = 0.20975
+Maximum accepted packet rate = 0.243 (at node 8)
+Minimum injected flit rate = 0.201 (at node 4)
+Average injected flit rate = 0.210125
+Maximum injected flit rate = 0.226 (at node 6)
+Minimum accepted flit rate = 0.187 (at node 13)
+Average accepted flit rate = 0.20975
+Maximum accepted flit rate = 0.243 (at node 8)
+Total number of injected packets = 3362
+Total number of injected flits = 3362
+Average injected packet length = 1
+Total number of accepted packets = 3356
+Total number of accepted flits = 3356
+Average accepted packet length = 1
+Total in-flight flits = 98 (0 measured)
+===== Time: 4000 =====
+Class 0:
+Minimum packet latency = 7
+Average packet latency = 26.3427
+Maximum packet latency = 165
+Minimum network latency = 8
+Average network latency = 27.3262
+Maximum network latency = 166
+Slowest packet = 10550
+Minimum flit latency = 8
+Average flit latency = 27.4129
+Maximum flit latency = 166
+Slowest flit = 10550
+Minimum fragmentation = 0
+Average fragmentation = 0
+Maximum fragmentation = 0
+Minimum injected packet rate = 0.188 (at node 0)
+Average injected packet rate = 0.2105
+Maximum injected packet rate = 0.242 (at node 15)
+Minimum accepted packet rate = 0.173 (at node 10)
+Average accepted packet rate = 0.211312
+Maximum accepted packet rate = 0.234 (at node 3)
+Minimum injected flit rate = 0.188 (at node 0)
+Average injected flit rate = 0.2105
+Maximum injected flit rate = 0.242 (at node 15)
+Minimum accepted flit rate = 0.173 (at node 10)
+Average accepted flit rate = 0.211312
+Maximum accepted flit rate = 0.234 (at node 3)
+Total number of injected packets = 3368
+Total number of injected flits = 3368
+Average injected packet length = 1
+Total number of accepted packets = 3381
+Total number of accepted flits = 3381
+Average accepted packet length = 1
+Total in-flight flits = 85 (85 measured)
+===== Time: 5000 =====
+Class 0:
+Minimum packet latency = 7
+Average packet latency = 26.1946
+Maximum packet latency = 165
+Minimum network latency = 8
+Average network latency = 27.1864
+Maximum network latency = 166
+Slowest packet = 10550
+Minimum flit latency = 8
+Average flit latency = 27.2325
+Maximum flit latency = 166
+Slowest flit = 10550
+Minimum fragmentation = 0
+Average fragmentation = 0
+Maximum fragmentation = 0
+Minimum injected packet rate = 0.1965 (at node 14)
+Average injected packet rate = 0.208063
+Maximum injected packet rate = 0.2245 (at node 15)
+Minimum accepted packet rate = 0.1805 (at node 4)
+Average accepted packet rate = 0.207969
+Maximum accepted packet rate = 0.2245 (at node 3)
+Minimum injected flit rate = 0.1965 (at node 14)
+Average injected flit rate = 0.208063
+Maximum injected flit rate = 0.2245 (at node 15)
+Minimum accepted flit rate = 0.1805 (at node 4)
+Average accepted flit rate = 0.207969
+Maximum accepted flit rate = 0.2245 (at node 3)
+Total number of injected packets = 6658
+Total number of injected flits = 6658
+Average injected packet length = 1
+Total number of accepted packets = 6655
+Total number of accepted flits = 6655
+Average accepted packet length = 1
+Total in-flight flits = 101 (101 measured)
+===== Time: 6000 =====
+Class 0:
+Minimum packet latency = 7
+Average packet latency = 26.3794
+Maximum packet latency = 165
+Minimum network latency = 8
+Average network latency = 27.3559
+Maximum network latency = 166
+Slowest packet = 10550
+Minimum flit latency = 8
+Average flit latency = 27.3846
+Maximum flit latency = 166
+Slowest flit = 10550
+Minimum fragmentation = 0
+Average fragmentation = 0
+Maximum fragmentation = 0
+Minimum injected packet rate = 0.199667 (at node 14)
+Average injected packet rate = 0.209708
+Maximum injected packet rate = 0.224667 (at node 15)
+Minimum accepted packet rate = 0.183333 (at node 4)
+Average accepted packet rate = 0.210042
+Maximum accepted packet rate = 0.221667 (at node 3)
+Minimum injected flit rate = 0.199667 (at node 14)
+Average injected flit rate = 0.209708
+Maximum injected flit rate = 0.224667 (at node 15)
+Minimum accepted flit rate = 0.183333 (at node 4)
+Average accepted flit rate = 0.210042
+Maximum accepted flit rate = 0.221667 (at node 3)
+Total number of injected packets = 10066
+Total number of injected flits = 10066
+Average injected packet length = 1
+Total number of accepted packets = 10082
+Total number of accepted flits = 10082
+Average accepted packet length = 1
+Total in-flight flits = 82 (82 measured)
+Draining remaining packets ...
+Class 0:
+Remaining flits: 19855 19889 19891 19899 19905 19908 19911 19914 19917 19918 [...] (50 flits)
+Measured flits: 19855 19889 19891 19899 19905 19908 19911 19914 19917 19918 [...] (50 flits)
+Class 0:
+Remaining flits: 19917 19926 19931 19932 19939 19942 19943 19945 19947 19948 [...] (23 flits)
+Measured flits: 19917 19926 19931 19932 19939 19942 19943 19945 19947 19948 [...] (23 flits)
+Class 0:
+Remaining flits: 19939 19945 19947 19957 19962 19963 19967 (7 flits)
+Measured flits: 19939 19945 19947 19957 19962 19963 19967 (7 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Class 0:
+Remaining flits: 19945 19947 (2 flits)
+Measured flits: 19945 19947 (2 flits)
+Time taken is 7000 cycles
+====== Traffic class 0 ======
+
+Total number of flits generated = 19970, changed lanes = 19136
+Overall minimum packet latency = 7 (1 samples)
+Overall average packet latency = 26.3954 (1 samples)
+Overall maximum packet latency = 165 (1 samples)
+Overall minimum network latency = 8 (1 samples)
+Overall average network latency = 27.372 (1 samples)
+Overall maximum network latency = 166 (1 samples)
+Overall minimum flit latency = 8 (1 samples)
+Overall average flit latency = 27.4004 (1 samples)
+Overall maximum flit latency = 166 (1 samples)
+Overall minimum fragmentation = 0 (1 samples)
+Overall average fragmentation = 0 (1 samples)
+Overall maximum fragmentation = 0 (1 samples)
+Overall minimum injected packet rate = 0.199667 (1 samples)
+Overall average injected packet rate = 0.209708 (1 samples)
+Overall maximum injected packet rate = 0.224667 (1 samples)
+Overall minimum accepted packet rate = 0.183333 (1 samples)
+Overall average accepted packet rate = 0.210042 (1 samples)
+Overall maximum accepted packet rate = 0.221667 (1 samples)
+Overall minimum injected flit rate = 0.199667 (1 samples)
+Overall average injected flit rate = 0.209708 (1 samples)
+Overall maximum injected flit rate = 0.224667 (1 samples)
+Overall minimum accepted flit rate = 0.183333 (1 samples)
+Overall average accepted flit rate = 0.210042 (1 samples)
+Overall maximum accepted flit rate = 0.221667 (1 samples)
+Overall average injected packet size = 1 (1 samples)
+Overall average accepted packet size = 1 (1 samples)
+Overall average hops = 3.00556 (1 samples)
+Overall throughput of the network (flits/cycle) = 6.656
+Overall throughput of the network (packets/cycle) = 6.656
+Total run time 30.5351

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item value="291" key="DIALOG_WIDTH"/>
+		<item value="107" key="DIALOG_Y_ORIGIN"/>
+		<item value="972" key="DIALOG_X_ORIGIN"/>
+		<item value="463" key="DIALOG_HEIGHT"/>
+		<item value="1|Ubuntu|11.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item value="true" key="wrap"/>
+		<item value="false" key="casesensitive"/>
+		<item value="false" key="isRegEx"/>
+		<item value="false" key="incremental"/>
+		<item value="true" key="wholeword"/>
+		<item value="hasvalue[port]" key="selection"/>
+		<list key="findhistory">
+			<item value="hasvalue[port]"/>
+			<item value="tail[this-&gt;getParentModule()-&gt;getIndex()][port][vc[port]]"/>
+			<item value="tail[this-&gt;getParentModule()-&gt;getIndex()][port][somemsg[port]-&gt;getVc()]"/>
+			<item value="msg=nullptr"/>
+			<item value="nullptr;"/>
+			<item value="somemsg[port]= new Packet();"/>
+			<item value="delete somemsg[port];"/>
+			<item value="memsg[por"/>
+		</list>
+		<list key="replacehistory">
+			<item value="tail[this-&gt;getParentModule()-&gt;getIndex()][port]"/>
+			<item value="somemsg[port]= new Packet(); somemsg[port] = nullptr;"/>
+			<item value="somemsg[port]= new Packet(); somemsg[port] = nullptr"/>
+			<item value="//delete somemsg[port];"/>
+			<item value="delete somemsg[port];"/>
+			<item value="//EV&lt;&lt;"/>
+			<item value="EV&lt;&lt;"/>
+		</list>
+	</section>
+</section>

@@ -1,0 +1,14 @@
+time_slot0 = 1
+time_slot1 = 2
+time_slot2 = 4
+time_slot3 = 3
+time_slot4 = 1
+//time_slot0 = 2.3
+//time_slot1 = 2.3
+//time_slot2 = 2.3
+//time_slot3 = 2.3
+//time_slot4 = 2.3
+//Unit Latency = {5.0, 3.0, 2.0};		//Default Latency = 0
+//ACK Latency = {1.0, 2.0, 1.0};		//Default Latency = 0
+//Unit Latency Variability = {1.0, 1.0, 1.0};		//Defult = 0;
+//ACK Latency Variability = {1.0, 1.0, 1.0};		//Defult = 0;

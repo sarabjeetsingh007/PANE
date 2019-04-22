@@ -1,0 +1,1 @@
+-DHAVE_SWAPCONTEXT -DWITH_QTENV -DWITH_TKENV -DWITH_MPI -DHAVE_PCAP -DXMLPARSER=libxml -DWITH_PARSIM -DWITH_NETBUILDER  -O2 -DNDEBUG=1 -fPIC  -fno-stack-protector   -I. -Iresults -I/home/sarab/Downloads/omnetpp-5.0/include

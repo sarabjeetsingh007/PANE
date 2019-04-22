@@ -1,0 +1,16 @@
+
+
+package trial2;
+
+simple mod_src
+{
+    parameters:
+        @display("i=block/routing");
+    gates:
+        output out @loose ;
+        input Ack_in @loose ;
+        output out_controller @loose ;
+        input in_controller @loose ;
+        input timeout_in @loose;
+        output timeout_out @loose;
+}
