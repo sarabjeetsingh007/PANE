@@ -13,7 +13,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package trial2;
+package PANE;
 
 //
 // TODO auto-generated module

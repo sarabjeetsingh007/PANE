@@ -1,47 +1,31 @@
+/*
+PANE/socket_lib.h
+Header file
+*/
 #ifndef sock_lib
 #define sock_lib
 
 #include <omnetpp.h>
 using namespace omnetpp;
-//Defining address
-void assignsocklist();
 
-//Src
-//int create_socket_src();
-//void setfd_src(const int& val);
-//int getfd_src();
+void assignsocklist();		//Defining address
 
-//Timer
-//int create_socket_timer();
-//void setfd_timer(const int& val);
-//int getfd_timer();
+void create_socket(int R,int C,int P);		//Setup RCP-data sockets
+int getfd(int R,int C,int P);		//Returns file descriptor pointing to the RCP-data socket
 
-//Clients
-void create_socket(int R,int C,int P);
-//void setfd(const int& val,int R,int C, int P);
-int getfd(int R,int C,int P);
+void setup_pollfd();		//Setup File pointer (fpopen) for pollfd
+pollfd getfds(int R,int C,int P);		//Get file pointer set
+FILE *getfp(int R,int C,int P);		//Get file pointer
 
-//Setup File pointer (fpopen) for pollfd
-void setup_pollfd();
-pollfd getfds(int R,int C,int P);
-FILE *getfp(int R,int C,int P);
+void sethasvalue(int R,int C,int P);		//Sets the counter for data written in the RCP-data socket (Sensible for only clients, C=0 & C=3)
+int gethasvalue(int R,int C,int P);		//Returns the counter value
+void resethasvalue(int R,int C,int P);		//Resets the counter value
 
-//Delimiter Addition
-void sethasvalue(int R,int C,int P);
-int gethasvalue(int R,int C,int P);
-void resethasvalue(int R,int C,int P);
-
-//HasSomemsg
-void setmsg(bool value,int R,int C);
-bool getmsg(int R,int C);
+void setmsg(bool value,int R,int C);		//Sets the flip value indicating status of poll msg in the particular epoch
+bool getmsg(int R,int C);		//Returns the flip value
 
 //Controller_Time
-bool setcontrollertime(SimTime current_time);
-SimTime getcontrollertime();
+void setcontrollertime(SimTime current_time);		//Sets controller time flag
+SimTime getcontrollertime();			//Returns controller time flag
 
-//////Toy Program
-////Clients
-//void create_socket2(int R,int C,int P);
-//int getfd2(int R,int C,int P);
-//void assignsocklist2();
 #endif

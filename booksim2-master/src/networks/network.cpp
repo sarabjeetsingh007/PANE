@@ -196,7 +196,7 @@ void Network::Evaluate( )
   }
 }
 
-void Network::CallLeftOverCredits( )				//*Sarab
+void Network::CallLeftOverCredits( )				
 {
 	for(deque<TimedModule *>::const_iterator iter = _timed_modules.begin();
 	      iter != _timed_modules.end();

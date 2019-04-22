@@ -13,16 +13,16 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package trial2;
+package PANE;
 
 simple mod
 {
     parameters:
         @display("i=block/star");
     gates:
-        input in[5] @loose ;
-        output out[5] @loose ;
-        input Ack_in[5] @loose ;
-        output Ack_out[5] @loose ;
-        output poll @loose;
+        input in[5] @loose ;		//Message input gate
+        output out[5] @loose ;		//Message output gate
+        input Ack_in[5] @loose ;		//Acknowledgement input gate 
+        output Ack_out[5] @loose ;		//Acknowledgement output gate 
+        output poll @loose;		//Poll message gate
 }

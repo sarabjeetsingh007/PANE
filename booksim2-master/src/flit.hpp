@@ -38,7 +38,7 @@ public:
   int  hops;
   bool watch;
   
-  int starttime;	//Sarab
+  int starttime;	//PANE Support
   
   int repeat_change;
   

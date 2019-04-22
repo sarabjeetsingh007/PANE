@@ -1,0 +1,592 @@
+make: Nothing to be done for `all'.
+Master: Running timer....
+Master: Running SRC....
+BEGIN Configuration File: ./examples/bitrev
+// Topology
+
+topology = mesh;
+k = 4;
+n = 2;
+
+// Routing
+routing_function = dor;
+
+// Flow control
+num_vcs     = 4;
+vc_buf_size = 4;
+wait_for_tail_credit = 0;
+
+// Router architecture
+vc_allocator = islip;
+sw_allocator = islip;
+alloc_iters  = 1;
+
+credit_delay   = 1;
+routing_delay  = 1;
+vc_alloc_delay = 1;
+sw_alloc_delay = 1;
+
+input_speedup     = 1;
+output_speedup    = 1;
+internal_speedup  = 1.0;
+
+vc_busy_when_full = 0;
+
+// Traffic
+traffic = uniform;
+packet_size = 1;
+
+// Simulation
+sim_type = throughput;
+
+injection_rate = 0.49;
+
+END Configuration File: ./examples/bitrev
+===== Time: 1000 =====
+Class 0:
+Minimum packet latency = 9
+Average packet latency = 159.587
+Maximum packet latency = 373
+Minimum network latency = 10
+Average network latency = 78.4153
+Maximum network latency = 207
+Slowest packet = 1023
+Minimum flit latency = 10
+Average flit latency = 78.4153
+Maximum flit latency = 207
+Slowest flit = 4453
+Minimum fragmentation = 0
+Average fragmentation = 0
+Maximum fragmentation = 0
+Minimum injected packet rate = 0.138 (at node 3)
+Average injected packet rate = 0.359438
+Maximum injected packet rate = 0.399 (at node 7)
+Minimum accepted packet rate = 0.3 (at node 4)
+Average accepted packet rate = 0.328562
+Maximum accepted packet rate = 0.353 (at node 15)
+Minimum injected flit rate = 0.138 (at node 3)
+Average injected flit rate = 0.359438
+Maximum injected flit rate = 0.399 (at node 7)
+Minimum accepted flit rate = 0.3 (at node 4)
+Average accepted flit rate = 0.328562
+Maximum accepted flit rate = 0.353 (at node 15)
+Total number of injected packets = 5751
+Total number of injected flits = 5751
+Average injected packet length = 1
+Total number of accepted packets = 5257
+Total number of accepted flits = 5257
+Average accepted packet length = 1
+Total in-flight flits = 506 (0 measured)
+===== Time: 2000 =====
+Class 0:
+Minimum packet latency = 9
+Average packet latency = 292.089
+Maximum packet latency = 779
+Minimum network latency = 10
+Average network latency = 81.5425
+Maximum network latency = 222
+Slowest packet = 1023
+Minimum flit latency = 10
+Average flit latency = 81.5425
+Maximum flit latency = 222
+Slowest flit = 5368
+Minimum fragmentation = 0
+Average fragmentation = 0
+Maximum fragmentation = 0
+Minimum injected packet rate = 0.069 (at node 3)
+Average injected packet rate = 0.338938
+Maximum injected packet rate = 0.3915 (at node 7)
+Minimum accepted packet rate = 0.287 (at node 4)
+Average accepted packet rate = 0.324656
+Maximum accepted packet rate = 0.3435 (at node 8)
+Minimum injected flit rate = 0.069 (at node 3)
+Average injected flit rate = 0.338938
+Maximum injected flit rate = 0.3915 (at node 7)
+Minimum accepted flit rate = 0.287 (at node 4)
+Average accepted flit rate = 0.324656
+Maximum accepted flit rate = 0.3435 (at node 8)
+Total number of injected packets = 10846
+Total number of injected flits = 10846
+Average injected packet length = 1
+Total number of accepted packets = 10389
+Total number of accepted flits = 10389
+Average accepted packet length = 1
+Total in-flight flits = 466 (0 measured)
+===== Time: 3000 =====
+Class 0:
+Minimum packet latency = 369
+Average packet latency = 703.949
+Maximum packet latency = 1093
+Minimum network latency = 37
+Average network latency = 87.7103
+Maximum network latency = 353
+Slowest packet = 10567
+Minimum flit latency = 37
+Average flit latency = 87.7103
+Maximum flit latency = 353
+Slowest flit = 12837
+Minimum fragmentation = 0
+Average fragmentation = 0
+Maximum fragmentation = 0
+Minimum injected packet rate = 0 (at node 3)
+Average injected packet rate = 0.279625
+Maximum injected packet rate = 0.388 (at node 7)
+Minimum accepted packet rate = 0.256 (at node 13)
+Average accepted packet rate = 0.28025
+Maximum accepted packet rate = 0.311 (at node 9)
+Minimum injected flit rate = 0 (at node 3)
+Average injected flit rate = 0.279625
+Maximum injected flit rate = 0.388 (at node 7)
+Minimum accepted flit rate = 0.256 (at node 13)
+Average accepted flit rate = 0.28025
+Maximum accepted flit rate = 0.311 (at node 9)
+Total number of injected packets = 4474
+Total number of injected flits = 4474
+Average injected packet length = 1
+Total number of accepted packets = 4484
+Total number of accepted flits = 4484
+Average accepted packet length = 1
+Total in-flight flits = 457 (0 measured)
+===== Time: 4000 =====
+Class 0:
+Minimum packet latency = 551
+Average packet latency = 1000.99
+Maximum packet latency = 1473
+Minimum network latency = 38
+Average network latency = 84.9966
+Maximum network latency = 260
+Slowest packet = 15346
+Minimum flit latency = 38
+Average flit latency = 85.5982
+Maximum flit latency = 260
+Slowest flit = 16605
+Minimum fragmentation = 0
+Average fragmentation = 0
+Maximum fragmentation = 0
+Minimum injected packet rate = 0 (at node 0)
+Average injected packet rate = 0.284187
+Maximum injected packet rate = 0.392 (at node 7)
+Minimum accepted packet rate = 0.251 (at node 10)
+Average accepted packet rate = 0.284
+Maximum accepted packet rate = 0.306 (at node 0)
+Minimum injected flit rate = 0 (at node 0)
+Average injected flit rate = 0.284187
+Maximum injected flit rate = 0.392 (at node 7)
+Minimum accepted flit rate = 0.251 (at node 10)
+Average accepted flit rate = 0.284
+Maximum accepted flit rate = 0.306 (at node 0)
+Total number of injected packets = 4547
+Total number of injected flits = 4547
+Average injected packet length = 1
+Total number of accepted packets = 4544
+Total number of accepted flits = 4544
+Average accepted packet length = 1
+Total in-flight flits = 463 (397 measured)
+===== Time: 5000 =====
+Class 0:
+Minimum packet latency = 551
+Average packet latency = 1145.5
+Maximum packet latency = 1818
+Minimum network latency = 38
+Average network latency = 83.6143
+Maximum network latency = 287
+Slowest packet = 15346
+Minimum flit latency = 38
+Average flit latency = 83.9727
+Maximum flit latency = 287
+Slowest flit = 22939
+Minimum fragmentation = 0
+Average fragmentation = 0
+Maximum fragmentation = 0
+Minimum injected packet rate = 0 (at node 0)
+Average injected packet rate = 0.285438
+Maximum injected packet rate = 0.392 (at node 7)
+Minimum accepted packet rate = 0.2635 (at node 13)
+Average accepted packet rate = 0.285438
+Maximum accepted packet rate = 0.301 (at node 3)
+Minimum injected flit rate = 0 (at node 0)
+Average injected flit rate = 0.285438
+Maximum injected flit rate = 0.392 (at node 7)
+Minimum accepted flit rate = 0.2635 (at node 13)
+Average accepted flit rate = 0.285438
+Maximum accepted flit rate = 0.301 (at node 3)
+Total number of injected packets = 9134
+Total number of injected flits = 9134
+Average injected packet length = 1
+Total number of accepted packets = 9134
+Total number of accepted flits = 9134
+Average accepted packet length = 1
+Total in-flight flits = 459 (393 measured)
+===== Time: 6000 =====
+Class 0:
+Minimum packet latency = 551
+Average packet latency = 1286.59
+Maximum packet latency = 2142
+Minimum network latency = 38
+Average network latency = 82.6292
+Maximum network latency = 287
+Slowest packet = 15346
+Minimum flit latency = 38
+Average flit latency = 82.893
+Maximum flit latency = 287
+Slowest flit = 22939
+Minimum fragmentation = 0
+Average fragmentation = 0
+Maximum fragmentation = 0
+Minimum injected packet rate = 0 (at node 0)
+Average injected packet rate = 0.289
+Maximum injected packet rate = 0.392667 (at node 7)
+Minimum accepted packet rate = 0.262667 (at node 4)
+Average accepted packet rate = 0.289021
+Maximum accepted packet rate = 0.298 (at node 3)
+Minimum injected flit rate = 0 (at node 0)
+Average injected flit rate = 0.289
+Maximum injected flit rate = 0.392667 (at node 7)
+Minimum accepted flit rate = 0.262667 (at node 4)
+Average accepted flit rate = 0.289021
+Maximum accepted flit rate = 0.298 (at node 3)
+Total number of injected packets = 13872
+Total number of injected flits = 13872
+Average injected packet length = 1
+Total number of accepted packets = 13873
+Total number of accepted flits = 13873
+Average accepted packet length = 1
+Total in-flight flits = 459 (393 measured)
+Draining remaining packets ...
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (415 flits)
+Measured flits: 28571 28602 28628 28640 28641 28661 28663 28683 28717 28733 [...] (349 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (366 flits)
+Measured flits: 28571 28628 28661 28683 28717 28746 28751 28764 28765 28775 [...] (300 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (315 flits)
+Measured flits: 28683 28717 28764 28765 28790 28816 28830 28840 28848 28855 [...] (249 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (267 flits)
+Measured flits: 28765 28790 28816 28855 28865 28868 28874 28882 28887 28889 [...] (201 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (214 flits)
+Measured flits: 28765 28790 28816 28855 28882 28899 28910 28914 28920 28924 [...] (148 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (173 flits)
+Measured flits: 28790 28855 28899 28910 28924 28939 28953 28958 28960 28966 [...] (107 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (145 flits)
+Measured flits: 28855 28910 28939 28960 28981 28989 28991 29003 29004 29022 [...] (79 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (119 flits)
+Measured flits: 28855 28910 28981 28991 29003 29028 29039 29048 29050 29051 [...] (53 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (92 flits)
+Measured flits: 28910 29028 29039 29050 29051 29094 29097 29099 29117 29137 [...] (26 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (78 flits)
+Measured flits: 29051 29094 29117 29142 29164 29165 29173 29179 29192 29200 [...] (12 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (74 flits)
+Measured flits: 29094 29117 29164 29179 29192 29200 29201 29202 (8 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Class 0:
+Remaining flits: 1689 1830 1875 1973 2008 2014 2038 2053 2065 2085 [...] (71 flits)
+Measured flits: 29179 29192 29200 29201 29202 (5 flits)
+Time taken is 7000 cycles
+====== Traffic class 0 ======
+
+Total number of flits generated = 29205, changed lanes = 28487
+Overall minimum packet latency = 551 (1 samples)
+Overall average packet latency = 1297.73 (1 samples)
+Overall maximum packet latency = 2149 (1 samples)
+Overall minimum network latency = 38 (1 samples)
+Overall average network latency = 82.7473 (1 samples)
+Overall maximum network latency = 287 (1 samples)
+Overall minimum flit latency = 38 (1 samples)
+Overall average flit latency = 83.0006 (1 samples)
+Overall maximum flit latency = 287 (1 samples)
+Overall minimum fragmentation = 0 (1 samples)
+Overall average fragmentation = 0 (1 samples)
+Overall maximum fragmentation = 0 (1 samples)
+Overall minimum injected packet rate = 0 (1 samples)
+Overall average injected packet rate = 0.289 (1 samples)
+Overall maximum injected packet rate = 0.392667 (1 samples)
+Overall minimum accepted packet rate = 0.262667 (1 samples)
+Overall average accepted packet rate = 0.289021 (1 samples)
+Overall maximum accepted packet rate = 0.298 (1 samples)
+Overall minimum injected flit rate = 0 (1 samples)
+Overall average injected flit rate = 0.289 (1 samples)
+Overall maximum injected flit rate = 0.392667 (1 samples)
+Overall minimum accepted flit rate = 0.262667 (1 samples)
+Overall average accepted flit rate = 0.289021 (1 samples)
+Overall maximum accepted flit rate = 0.298 (1 samples)
+Overall average injected packet size = 1 (1 samples)
+Overall average accepted packet size = 1 (1 samples)
+Overall average hops = 3.42509 (1 samples)
+Overall throughput of the network (flits/cycle) = 9.71133
+Overall throughput of the network (packets/cycle) = 9.71133
+Total run time 11112.4

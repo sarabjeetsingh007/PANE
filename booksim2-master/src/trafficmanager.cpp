@@ -15,7 +15,10 @@
 #include "random_utils.hpp" 
 #include "vc.hpp"
 
-#include <sys/types.h>		//*Sarab
+using namespace std;
+
+//*PANE support
+#include <sys/types.h>
 #include <sys/un.h>		
 #include <sys/socket.h>		
 #include <stdio.h>
@@ -23,7 +26,7 @@
 #include <stdlib.h>
 #include <deque>
 #include "socket_lib.hpp"
-namespace patch
+namespace patch				//Patch for std::to_string()
 {
     template < typename T > std::string to_string( const T& n )
     {
@@ -32,23 +35,14 @@ namespace patch
         return stm.str() ;
     }
 }				
-using namespace std;
 
-char *str_tbs_src = "msg\n";	
-//char *str_tbs_src2 = "msg\n";	
-char char_rcv_src;		
-FILE *fp_src;		
-fd_set writeset;
-//int transfer_counter[numRouters][numClients][5];
-//struct timeval tv;	
-
-std::deque<pair<int, int> > genque;
-
-char *str_tbs_timer = "msg\n";		
-char char_rcv_timer;		
-FILE *fp_timer;		
-
-//int hid;	//Sarab*
+std::deque<pair<int, int> > genque;		//Records the generated flits and their size 
+char *str_tbs_src = "Junk\n";		//Message to be sent through the socket
+char *str_tbs_timer = "Junk\n";		//Message to be sent through the socket		
+FILE *fp_src;		//(UNIX DOMAIN SOCKET) file pointer		
+fd_set writeset;		//(UNIX DOMAIN SOCKET) Represents the file descriptors set
+FILE *fp_timer;			//(UNIX DOMAIN SOCKET) file pointer
+//PANE support*
 
 TrafficManager * TrafficManager::New(Configuration const & config, vector<Network *> const & net)
 {
@@ -70,10 +64,11 @@ TrafficManager * TrafficManager::New(Configuration const & config, vector<Networ
 TrafficManager::TrafficManager( const Configuration &config, const vector<Network *> & net )
   : Module( 0, "traffic_manager" ), _net(net), _empty_network(false), _deadlock_timer(0), _reset_time(0), _drain_time(-1), _cur_id(0), _cur_pid(0), _time(0)
 {
-	FD_ZERO(&writeset);			//*Sarab
-        FD_SET(getfd_src(), &writeset);
-	resetTransferCounter(); 
-					//Sarab*
+	//*PANE support
+	FD_ZERO(&writeset);			
+    FD_SET(getfd_src(), &writeset);
+	resetTransferCounter();		//Resets the RCP socket counter
+	//PANE support*
 
   _nodes = _net[0]->NumNodes( );
   _routers = _net[0]->NumRouters( );
@@ -510,7 +505,7 @@ int TrafficManager::_GeneratePacket( int source, int dest, int size, int cl, int
     f->vc  = -1;
     f->repeat_change = 0;		//Sneha
     Generated_flits++;			//Sneha
-    	f->starttime = (int)(GetSimTime());	//Sarab
+	f->starttime = (int)(GetSimTime());		//PANE support
 //    printf("\nTime:,%d,%d,[%d][%d],GenFlit,%d\n", GetSimTime(), f->src, f->id, f->pid, f->vc); //*Sneha
 //    int junk; cin >>junk;
 
@@ -540,7 +535,7 @@ int TrafficManager::_GeneratePacket( int source, int dest, int size, int cl, int
 
     _partial_packets[cl][source].push_back(f);
   }
-	genque.push_back(make_pair(size,source));	//*Sarab
+	genque.push_back(make_pair(size,source));	//PANE support
   return pid;
 }
 
@@ -611,8 +606,6 @@ void TrafficManager::_Step( )
 	}
 
 	Flit * const cf = pp.front();
-//	if(n==14)
-//		cout<<GetSimTime()<<"s:Agent:"<<cf->id<<endl;
 	if(f && (f->pri >= cf->pri))
 	{
 	  continue;
@@ -655,8 +648,6 @@ void TrafficManager::_Step( )
 	{
 	  if(dest_buf->IsFullFor(cf->vc))
 	  {
-//		if(n==14)
-//			cout<<GetSimTime()<<"s:Went Rogue:"<<cf->id<<endl;
 	  }
 	  else
 	  {
@@ -720,8 +711,8 @@ void TrafficManager::_Step( )
     _net[subnet]->Evaluate( );
     _net[subnet]->WriteOutputs( );
   }
-								//*Sarab
-	fp_src = fdopen(getfd_src(), "r");
+	//*PANE support
+	fp_src = fdopen(getfd_src(), "r");		//Open file for writing
 	std::deque<pair<int, int> >::iterator iter = genque.begin();	
 	std::string myvariable_src;
 	myvariable_src.append(patch::to_string(genque.size()));
@@ -732,22 +723,21 @@ void TrafficManager::_Step( )
 		myvariable_src.append("\n");
 		myvariable_src.append(patch::to_string(iter->second));
 		myvariable_src.append("\n");
-
 		genque.pop_front();
 		if(genque.size()>0)
 			iter++;
 	}
 	str_tbs_src = &myvariable_src[0];
-	::send(getfd_src(),str_tbs_src , strlen(str_tbs_src), 0);
-
-	fp_timer = fdopen(getfd_timer(), "r");			
-	::send(getfd_timer(),str_tbs_timer , strlen(str_tbs_timer), 0);
+	::send(getfd_src(),str_tbs_src , strlen(str_tbs_src), 0);		//Write newly generated flits to the socket file 
+	fp_timer = fdopen(getfd_timer(), "r");			//Open file for writing		
+	::send(getfd_timer(),str_tbs_timer , strlen(str_tbs_timer), 0);		//Write newly generated flits to the socket file
 	int i=0;
 	int R,C,P;
 	int output=0;
-	while ((char_rcv_timer = fgetc(fp_timer)) != EOF)		
+	char char_rcv_timer;
+	while ((char_rcv_timer = fgetc(fp_timer)) != EOF)		//Read counters indicating number of data writes in all the RCP-data sockets	
 	{
-		if (char_rcv_timer == '*')
+		if (char_rcv_timer == '*')		//Indicating EOF
 			break;
 		else
 		{
@@ -764,7 +754,7 @@ void TrafficManager::_Step( )
 					case 2:	P=output;
 						++i;
 						break;
-					case 3:	setTransferCounter(R,C,P,output);
+					case 3:	setTransferCounter(R,C,P,output);		//Set counter
 						i=0;
 						break;
 				}
@@ -776,7 +766,7 @@ void TrafficManager::_Step( )
 			}
 		}
 	}	
-						//Sarab*
+	//PANE support*
   ++_time;
   assert(_time);
   if(gTrace){
@@ -784,7 +774,7 @@ void TrafficManager::_Step( )
   }
 }
 
-void TrafficManager::CallLeftOvers( )		//*Sarab
+void TrafficManager::CallLeftOvers( )		//PANE support. Takes care of the leftover credits
 {
 	for(int subnet = 0; subnet < _subnets; ++subnet)
 	{
@@ -968,7 +958,9 @@ int junk;
 //	packets_left |= !_total_in_flight_flits[c].empty();
 //      }
 //    }
-for(int cnt = 0; cnt <1000; cnt++) { 
+
+//*PANE support
+for(int cnt = 0; cnt <1000; cnt++) { 		//TODO: upper bound for cnt
 	CallLeftOvers( ); 
       _Step( ); 
 
@@ -987,6 +979,8 @@ for(int cnt = 0; cnt <1000; cnt++) {
 	if(packets_left==false && Credit::OutStanding()==0)
 		break;
     }
+//PANE support*
+
     //wait until all the credits are drained as well
     while(Credit::OutStanding()!=0){
       _Step();
@@ -995,8 +989,7 @@ for(int cnt = 0; cnt <1000; cnt++) {
 
     //for the love of god don't ever say "Time taken" anywhere else the power script depend on it
     cout << "Time taken is " << _time << " cycles" <<endl; 
-//str_tbs_src[1] = '\n';
-	::send(getfd_src(),"q" , strlen("q"), 0);		//*Sarab
+	::send(getfd_src(),"q" , strlen("q"), 0);		//PANE support
     if(_stats_out) {
       WriteStats(*_stats_out);
     }

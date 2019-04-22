@@ -30,7 +30,7 @@ vc_busy_when_full = 0;
 
 // Traffic
 traffic = neighbor;
-packet_size = 1;
+packet_size = 5;
 
 // Simulation
 sim_type = throughput;

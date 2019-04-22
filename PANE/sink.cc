@@ -17,13 +17,12 @@ class mod_sink : public cSimpleModule
 {
     private:
        Packet *somemsg;
-       bool this_status;
 //       cStdDev DelayStats;
 
     public:
        mod_sink();
        virtual ~mod_sink();
-       int count = 0;
+       int count = 0;		//Records the number of flits retired at the particular Router
      protected:
        virtual void sendAck(Packet *msg);
         virtual void initialize() override;
@@ -34,7 +33,6 @@ Define_Module(mod_sink);
 
 mod_sink::mod_sink()
 {
-    this_status=true;
     somemsg=nullptr;
 }
 
@@ -44,24 +42,16 @@ mod_sink::~mod_sink()
 }
 void mod_sink::initialize()
 {
-    this_status= true;
 }
 void mod_sink::handleMessage(cMessage *msg)
 {
     somemsg = check_and_cast<Packet *>(msg);
-
 //    EV<<"~~~~~~~~~~~~~~~~~~~~~~~~~ SINK: Received, Message, ID: "<<somemsg->getPid()<<", Delay: "<<somemsg->getDelay()<<"s \n";
-	//    somemsg->setDelay(simTime().dbl() - somemsg->getDelay());
     count++;
-//std::cout<<"Time:"<<simTime()<<"s,Router["<<this->getIndex()<<"] Retire["<<somemsg->getPid()<<"], Time Taken = "<<(simTime().dbl() - somemsg->getDelay())<<"s\n";
 	Packet *counter = new Packet();
 	counter->setDelay(simTime().dbl() - somemsg->getDelay());
-//    DelayStats.collect(somemsg->getDelay());
-//    EV<<sink[this->getIndex()].count<<endl;
-//    EV<<"--------------------"<<this->count<<endl;
-//    cMessage *tt_msg = new cMessage();
-    sendDelayed(counter,0.0,"countret");
-    sendAck(somemsg);
+    sendDelayed(counter,0.0,"countret");		//Send to "PANE/controller" to record the statistics whenever a packet retires
+    sendAck(somemsg);		//Send acknowlodgment token
 }
 void mod_sink::sendAck(Packet *msg)
 {
@@ -70,7 +60,7 @@ void mod_sink::sendAck(Packet *msg)
 }
 void mod_sink::finish()
 {
-    std::cout<<count<<endl;
+    std::cout<<count<<endl;		//Number of packets retired at this Router
 //       EV<<"Number of packets received = "<<count<<endl;
 //       EV << "Delay, min:    " << DelayStats.getMin() <<"s \n";
 //       EV << "Delay, max:    " << DelayStats.getMax() <<"s \n";

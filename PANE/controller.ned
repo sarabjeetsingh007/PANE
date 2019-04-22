@@ -13,14 +13,14 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package trial2;
+package PANE;
 
 simple controller_src
 {
     parameters: 
         int numRouters = 16;
     gates:
-        output out[numRouters] @loose ;
-        input Ack_in[numRouters] @loose ;
-        input countret[numRouters];
+        output out[numRouters] @loose ;		//Gate for sending new packets of data into the network
+        input Ack_in[numRouters] @loose ;		//Gate for receiving acknowledgements of packets
+        input countret[numRouters];		//Gate for monitoring retired packets	
 }

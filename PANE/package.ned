@@ -1,3 +1,3 @@
-package trial2;
+package PANE;
 
 @license(LGPL);

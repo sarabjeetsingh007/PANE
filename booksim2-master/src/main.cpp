@@ -28,19 +28,15 @@
 #include "injection.hpp"
 #include "power_module.hpp"
 
-
-#include <sys/types.h>	//*Sarab		
+//*PANE support
+#include <sys/types.h>			
 #include <sys/socket.h>		
 #include <sys/un.h>		
 #include <unistd.h>
 #include "socket_lib.hpp"
-#define numRouters 16
-#define numClients 4
-
-int s_src;
-int s_timer;	
-int s[numRouters][5][5];
-			//Sarab*
+#define numRouters 16		//Represents the number of Routers in the network
+#define numClients 4		//Represents the division of a Router
+//PANE Support*
 
 ///////////////////////////////////////////////////////////////////////////////
 //Global declarations
@@ -136,30 +132,21 @@ bool Simulate( BookSimConfig const & config )
 
 int main( int argc, char **argv )
 {
-	//Assigning Address			//*Sarab
-	assignsocklist();
-	//Timer					
-	setfd_timer(create_socket_timer());
-	usleep(10000);
-
-	//Src					
-	setfd_src(create_socket_src());
-	usleep(10000);
-	
-	//Clients
+	//*PANE support
+	assignsocklist();		//Defining address
+	setfd_timer(create_socket_timer());		//Epoch increment socket	
+	setfd_src(create_socket_src());		//Packet generation socket
 	for(int R=0;R<numRouters;R++)
 	{
 		for(int C=0;C<numClients;C++)
 		{
 		    for(int P=0;P<5;P++)
 		    {
-			setfd(create_socket(R,C,P),R,C,P);
+				setfd(create_socket(R,C,P),R,C,P);		//RCP-data Sockets
 		    }
 		}
 	}
-//	cout<<"Clients Done\n";
-						//Sarab*
-
+	//PANE support*
   BookSimConfig config;
 
 

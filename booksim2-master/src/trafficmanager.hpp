@@ -209,7 +209,7 @@ protected:
   virtual void _Inject() = 0;
   
   void _Step( );
-  void CallLeftOvers( );	//*Sarab
+  void CallLeftOvers( );	//PANE Support
 
   virtual bool _PacketsOutstanding( ) const;
   

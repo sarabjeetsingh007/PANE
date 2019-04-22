@@ -1,6 +1,9 @@
-
-package trial2;
-network tictoc1
+//PANE/network.ned
+//Describes the outer level connections of the network
+//Network distribution:		A single Controller responsible for managing the control of PANE simulation
+//							User defined Routers and their respective Cores(Source & Sink)
+package PANE;
+network NoC
 {
     parameters:
         int r = 0;	//right
@@ -28,7 +31,7 @@ network tictoc1
         }
     connections:
 
-	//Inter-Router Communication !!Go to network_ned_connections_mesh.py
+	//Inter-Router Communication !!Go to network_ned_connections.py
 
        router[0].out[r] --> router[1].in[l];
         router[1].out[r] --> router[2].in[l];

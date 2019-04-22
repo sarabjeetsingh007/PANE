@@ -1,27 +1,22 @@
+/*PANE Support*/
 #ifndef socket_lib
 #define socket_lib
 
-//Defining address
-void assignsocklist();
+void assignsocklist();		//Defining address
 
-//Src
-int create_socket_src();
-void setfd_src(const int& val);
+int create_socket_src();		//Setup Packet generation socket
+void setfd_src(const int& val);		
 int getfd_src();
 
-//Timer
-int create_socket_timer();
+int create_socket_timer();		//Setup Epoch increment socket
 void setfd_timer(const int& val);
 int getfd_timer();
 
-//Clients
-int create_socket(int R,int C,int P);
+int create_socket(int R,int C,int P);		//Setup RCP-data sockets
 void setfd(const int& val,int R,int C, int P);
 int getfd(int R,int C,int P);
 
-//Transfer Counter
-
-int getTransferCounter(int R,int C, int P);	//Get number of flits tranferred by PANE that cycle.
+int getTransferCounter(int R,int C, int P);	//Counter to get number of flits tranferred by PANE that cycle.
 void setTransferCounter(int R,int C, int P, int value);	//Set data tranferred by PANE counter = value.
 void resetTransferCounter();	//Reset data tranferred by PANE counter. 
 #endif
