@@ -23,11 +23,7 @@ using namespace omnetpp;
 using namespace std;
 #define numRouters 16
 #define numClients 4
-#define RANDOM_ARRIVAL_TIME		((rand()%100)/100.0)	//Arrival Time Resolution
-#define CLASH_DETECTION_RESOLUTION	0.01			//Clash Detection Resolution
-#define CLASH_DELAY			(rand()%5+10)		//Delay in case of a clash
-#define DATA_DEPENDENT_VARIABILITY	10			//Random delay of client's timeslot (in %) between {0,99}	
-
+#define DATA_DEPENDENT_VARIABILITY	10			//Random delay of client's timeslot (in %) between {0,99}
 
 std::deque<Packet *> buff_body[numRouters][5];
 std::deque<Packet *> buff_tail[numRouters][5];
@@ -112,7 +108,6 @@ mod::~mod()
     }
     delete timer_msg;
 }
-
 void mod::setupclockdomain()
 {
 	if(this->getParentModule()->getIndex()<numRouters/2)
@@ -179,19 +174,15 @@ void mod::initialize()
 }
 void mod::handleMessage(cMessage *msg)
 {
-//        if(this->getIndex()==3)   
+//        if(this->getIndex()==3)     //TODO: Validate
 //        {
 //            for(int i=0;i<5;i++)
 //                ack[i]= true;
 //        }
-//        if(msg->arrivedOn("in") && (check_and_cast<Packet *>(msg)->getPid()==-1))
-//        {
-//            cout<<"Exit\n";
-//            finish();
-//            return;
-//        }
         if(msg->arrivedOn("Ack_in"))
         {
+//            ackmsg[msg->getArrivalGate()->getIndex()] = check_and_cast<Packet *>(msg);
+//            EV<<"~~~~~~~~~~~~~~~~~~~~~~~~~ "<<this->getParentModule()->getFullName()<<"."<<this->getFullName()<<": Received, Acknowledgement, ID: "<<ackmsg[msg->getArrivalGate()->getIndex()]->getPid()<<", Port:"<<msg->getArrivalGate()->getIndex()<<" \n";
             ack[msg->getArrivalGate()->getIndex()] = true;
             if((int)(getcontrollertime().dbl()) != (int)(simTime().dbl()))
             {
@@ -199,6 +190,7 @@ void mod::handleMessage(cMessage *msg)
                 cMessage *tt_msg = new cMessage();
                 sendDelayed(tt_msg,0.0,"poll");
             }
+//            delete ackmsg[msg->getArrivalGate()->getIndex()];
 		delete (msg);
             return;
         }
@@ -213,6 +205,8 @@ void mod::handleMessage(cMessage *msg)
     		sendDelayed(ack_msg,0.0/* (double)(intuniform(0,k)/100.0)*/,"Ack_out",msg->getArrivalGate()->getIndex());    
                 if(check_and_cast<Packet *>(msg)->getPid() != check_and_cast<Packet *>(msg)->getHid())
                 {
+//			if(this->getParentModule()->getIndex()==6 && check_and_cast<Packet *>(msg)->getPid()==39)
+//				cout<<simTime()<<"Received[39]\n";
                     notifyBookSim(check_and_cast<Packet *>(msg)->getPid(),msg->getArrivalGate()->getIndex());
                     if(check_and_cast<Packet *>(msg)->getPid()==(check_and_cast<Packet *>(msg)->getHid() + check_and_cast<Packet *>(msg)->getSize() - 1))
                     {
@@ -248,7 +242,7 @@ void mod::handleMessage(cMessage *msg)
                           if((replyfrombooksim1[port] = replyfromBookSim(port)) >= 0)
                           {
                               hasvalue[port] = true;
-                              lastsent[this->getParentModule()->getIndex()][port] = simTime() - RANDOM_ARRIVAL_TIME;
+                              lastsent[this->getParentModule()->getIndex()][port] = simTime();
               		  }
                       }
                        if((hasvalue[port]==true) && (ack[replyfrombooksim1[port] - 1]==true))
@@ -257,22 +251,7 @@ void mod::handleMessage(cMessage *msg)
                              {
                                  tail[this->getParentModule()->getIndex()][port] = false;
                                  ack[replyfrombooksim1[port] - 1]=false;
-                                 int flag=0;
-                                 for(int P=0; P<5; P++)
-                                 {
-                                 	if(P==port)
-                                 		continue;
-                         		if(abs(lastsent[this->getParentModule()->getIndex()][port].dbl()-lastsent[this->getParentModule()->getIndex()][P].dbl())<=CLASH_DETECTION_RESOLUTION && replyfrombooksim1[port]==replyfrombooksim1[P])	
-                         		{
-//						cout<<"Clash:["<<this->getParentModule()->getIndex()<<"]->"<<lastsent[this->getParentModule()->getIndex()][port].dbl()<<","<<lastsent[this->getParentModule()->getIndex()][P].dbl()<<endl;
-                         			flag=1;
-                         			break;
-                 			}
-                                 }
-                                 if(flag==1)
-                                 	sendDelayed(somemsg[port],CLASH_DELAY + k[this->getIndex()]/* (double)(intuniform(0,k)/100.0)*/,"out",(replyfrombooksim1[port]-1));
-                         	 else
-                                 	sendDelayed(somemsg[port],k[this->getIndex()]/* (double)(intuniform(0,k)/100.0)*/,"out",(replyfrombooksim1[port]-1));
+                         	sendDelayed(somemsg[port],k[this->getIndex()]/* (double)(intuniform(0,k)/100.0)*/,"out",(replyfrombooksim1[port]-1));
                                  lastbody[this->getParentModule()->getIndex()][port] = somemsg[port]->getPid();
                                  lasthead[this->getParentModule()->getIndex()][port] = somemsg[port]->getPid();
                                  justarrived[this->getParentModule()->getIndex()][port]=true;
@@ -302,7 +281,7 @@ void mod::handleMessage(cMessage *msg)
                                     {
                                     	if(justarrived[this->getParentModule()->getIndex()][port]==true)
                                     	{
-                                    		lastsent[this->getParentModule()->getIndex()][port] = simTime() - RANDOM_ARRIVAL_TIME;	
+                                    		lastsent[this->getParentModule()->getIndex()][port] = simTime();
                                     		justarrived[this->getParentModule()->getIndex()][port] = false;
                     			}
                     			if((simTime() - lastsent[this->getParentModule()->getIndex()][port] >= actual_slot2[this->getParentModule()->getIndex()][port]) && (ack[replyfrombooksim1[port] - 1]==true))
@@ -319,22 +298,7 @@ void mod::handleMessage(cMessage *msg)
 		                                notifyBookSim(somemsg[port]->getPid(),port);
 		                                ack[replyfrombooksim1[port] - 1]=false;
 		                                actual_slot2[this->getParentModule()->getIndex()][port] = time_slot + pow(-1,rand()%2)*(rand()%((int)time_slot*DATA_DEPENDENT_VARIABILITY))/100.0;
-		                                int flag=0;
-				                 for(int P=0; P<5; P++)
-				                 {
-				                 	if(P==port)
-				                 		continue;
-				         		if(abs(lastsent[this->getParentModule()->getIndex()][port].dbl()-lastsent[this->getParentModule()->getIndex()][P].dbl())<=CLASH_DETECTION_RESOLUTION && replyfrombooksim1[port]==replyfrombooksim1[P])	
-				         		{
-//						cout<<"Clash:["<<this->getParentModule()->getIndex()<<"]->"<<lastsent[this->getParentModule()->getIndex()][port].dbl()<<","<<lastsent[this->getParentModule()->getIndex()][P].dbl()<<endl;
-				         			flag=1;
-				         			break;
-				 			}
-				                 }
-				                 if(flag==1)
-				                 	sendDelayed(somemsg[port],CLASH_DELAY + k[this->getIndex()]/* (double)(intuniform(0,k)/100.0)*/,"out",(replyfrombooksim1[port]-1));
-				         	 else
-				                 	sendDelayed(somemsg[port],k[this->getIndex()]/* (double)(intuniform(0,k)/100.0)*/,"out",(replyfrombooksim1[port]-1));
+			                 	sendDelayed(somemsg[port],k[this->getIndex()]/* (double)(intuniform(0,k)/100.0)*/,"out",(replyfrombooksim1[port]-1));
 						std::deque<Packet *>::iterator j = iter;		//TODO: Better fix for iter segF
 		                                buff_body[this->getParentModule()->getIndex()][port].erase(iter);
 		                                if(j==iter && iter!=buff_body[this->getParentModule()->getIndex()][port].end())
@@ -360,7 +324,7 @@ void mod::handleMessage(cMessage *msg)
                                         {
                                 		if(justarrived[this->getParentModule()->getIndex()][port]==true)
 		                            	{
-		                            		lastsent[this->getParentModule()->getIndex()][port] = simTime() - RANDOM_ARRIVAL_TIME;
+		                            		lastsent[this->getParentModule()->getIndex()][port] = simTime();
 		                            		justarrived[this->getParentModule()->getIndex()][port] = false;
 		            			}
 		            			if((simTime() - lastsent[this->getParentModule()->getIndex()][port] >= actual_slot2[this->getParentModule()->getIndex()][port]) && (ack[replyfrombooksim1[port] - 1]==true))
@@ -377,22 +341,7 @@ void mod::handleMessage(cMessage *msg)
 							notifyBookSim(somemsg[port]->getPid(),port);
 							actual_slot2[this->getParentModule()->getIndex()][port] = time_slot + pow(-1,rand()%2)*(rand()%((int)time_slot*DATA_DEPENDENT_VARIABILITY))/100.0;
 							actual_slot[port] = time_slot + pow(-1,rand()%2)*(rand()%((int)time_slot*DATA_DEPENDENT_VARIABILITY))/100.0;
-							int flag=0;
-						         for(int P=0; P<5; P++)
-						         {
-						         	if(P==port)
-						         		continue;
-						 		if(abs(lastsent[this->getParentModule()->getIndex()][port].dbl()-lastsent[this->getParentModule()->getIndex()][P].dbl())<=CLASH_DETECTION_RESOLUTION && replyfrombooksim1[port]==replyfrombooksim1[P])
-						 		{
-//						cout<<"Clash:["<<this->getParentModule()->getIndex()<<"]->"<<lastsent[this->getParentModule()->getIndex()][port].dbl()<<","<<lastsent[this->getParentModule()->getIndex()][P].dbl()<<endl;
-						 			flag=1;
-						 			break;
-					 			}
-						         }
-						         if(flag==1)
-						         	sendDelayed(somemsg[port],CLASH_DELAY + k[this->getIndex()]/* (double)(intuniform(0,k)/100.0)*/,"out",(replyfrombooksim1[port]-1)); 
-						 	 else
-						         	sendDelayed(somemsg[port],k[this->getIndex()]/* (double)(intuniform(0,k)/100.0)*/,"out",(replyfrombooksim1[port]-1));
+					         	sendDelayed(somemsg[port],k[this->getIndex()]/* (double)(intuniform(0,k)/100.0)*/,"out",(replyfrombooksim1[port]-1));
                                  
 							buff_tail[this->getParentModule()->getIndex()][port].erase(iter2);
 							hasvalue[port]=false;
@@ -448,11 +397,16 @@ void mod::handleMessage(cMessage *msg)
                                         {
                                             somemsg[port] = iter->first;
                                             hasvalue0[port]=false;
+//                                            Packet *ack_msg= new Packet();
+//                                            ack_msg->setPid(somemsg[port]->getPid());
+//                                            ack_msg->setPacket_type(1);
+//                                            ack_msg->setKind(1);
+//                                            sendDelayed(ack_msg,0.0/* (double)(intuniform(0,k)/100.0)*/,"Ack_out",port/*0*/);
                                             ack[port] = false;
                                             sendDelayed(somemsg[port],k[this->getIndex()]/* (double)(intuniform(0,k)/100.0)*/,"out",port);
 //                                          somemsg[port] = nullptr;
                                             buffer[this->getParentModule()->getIndex()][port].erase(iter);
-					    actual_slot[port] = time_slot + pow(-1,rand()%2)*(rand()%((int)time_slot*DATA_DEPENDENT_VARIABILITY))/100.0;
+                                            actual_slot[port] = time_slot + pow(-1,rand()%2)*(rand()%((int)time_slot*DATA_DEPENDENT_VARIABILITY))/100.0;
                                         }
                                     }
                                     break;
@@ -474,7 +428,7 @@ void mod::handleMessage(cMessage *msg)
                         ack[port] = false;
                         sendDelayed(somemsg[port],k[this->getIndex()]/* (double)(intuniform(0,k)/100.0)*/,"out",port);
                         sendDelayed(ack_msg,0.0/* (double)(intuniform(0,k)/100.0)*/,"Ack_out",port/*0*/);
-			actual_slot[port] = time_slot + pow(-1,rand()%2)*(rand()%((int)time_slot*DATA_DEPENDENT_VARIABILITY))/100.0;
+                        actual_slot[port] = time_slot + pow(-1,rand()%2)*(rand()%((int)time_slot*DATA_DEPENDENT_VARIABILITY))/100.0;
 //                      somemsg[port] = nullptr;
                   }
               }

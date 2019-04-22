@@ -29,8 +29,8 @@ internal_speedup  = 1.0;
 vc_busy_when_full = 0;
 
 // Traffic
-traffic = uniform;
-packet_size = 1;
+traffic = bitcomp;
+packet_size = 5;
 
 // Simulation
 sim_type = throughput;

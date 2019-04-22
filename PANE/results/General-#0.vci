@@ -1,15 +1,15 @@
                                                                 
 version 2
-run General-0-20170628-14:43:34-4176
+run General-0-20170616-11:04:21-14101
 attr configname General
-attr datetime 20170628-14:43:34
+attr datetime 20170616-11:04:21
 attr experiment General
 attr inifile omnetpp.ini
 attr iterationvars ""
 attr iterationvarsf ""
 attr measurement ""
 attr network tictoc1
-attr processid 4176
+attr processid 14101
 attr repetition 0
 attr replication #0
 attr resultdir results
